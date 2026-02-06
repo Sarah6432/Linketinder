@@ -1,3 +1,9 @@
+/**
+ * Linketinder - ZG-Hero Project
+ * Desenvolvedora: Sarah Silva Lima
+ * Versão: 1.0 (Sistema de Match)
+ */
+
 class LinketinderApp {
     static void main(String[] args) {
         List<Candidato> candidatos = [
