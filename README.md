@@ -24,6 +24,8 @@ O sistema foi estruturado seguindo princípios de POO:
    - Você pode verificar usando o comando: `groovy -v`
 2. **Clone o repositório:**
    ```bash
+   https://github.com/Sarah6432/Linketinder
+   
  ## 🚀 Atualização: Implementação do Sistema de Match
 
 Nesta nova etapa do projeto Linketinder, foi implementada a funcionalidade principal da aplicação: o sistema de curtidas e a detecção de interesse mútuo entre candidatos e empresas.
