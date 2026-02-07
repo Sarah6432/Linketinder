@@ -1,7 +1,9 @@
+import java.util.Scanner
+
 /**
  * Linketinder - ZG-Hero Project
  * Desenvolvedora: Sarah Silva Lima
- * Versão: 1.0 (Sistema de Match)
+ * Versão: 1.1
  */
 
 class LinketinderApp {
@@ -26,20 +28,21 @@ class LinketinderApp {
         Scanner scanner = new Scanner(System.in)
         int opcao = 0
 
-        while (opcao != 5) {
-            println "Bem-vindo!"
+        while (opcao != 7) {
+            println "\nLinketinder App"
             println "1. Listar Candidatos"
             println "2. Listar Empresas"
             println "3. Candidato: Curtir uma Empresa"
             println "4. Empresa: Curtir um Candidato"
-            println "5. Sair"
+            println "5. Cadastrar Novo Candidato"
+            println "6. Cadastrar Nova Empresa"
+            println "7. Sair"
             print "Escolha: "
 
             try {
-                opcao = scanner.nextInt()
+                opcao = Integer.parseInt(scanner.nextLine())
             } catch (Exception e) {
-                println "Entrada inválida!"
-                scanner.next()
+                println "Erro: Digite apenas números válidos!"
                 continue
             }
 
@@ -56,21 +59,53 @@ class LinketinderApp {
 
                 case 3:
                     println "Digite o índice do CANDIDATO: "
-                    int cIdx = scanner.nextInt()
+                    int cIdx = Integer.parseInt(scanner.nextLine())
                     println "Digite o índice da EMPRESA que deseja curtir: "
-                    int eIdx = scanner.nextInt()
+                    int eIdx = Integer.parseInt(scanner.nextLine())
                     registrarInteracao(listaCurtidas, candidatos[cIdx], empresas[eIdx], true)
                     break
 
                 case 4:
                     println "Digite o índice da EMPRESA: "
-                    int eIdx = scanner.nextInt()
+                    int eIdx = Integer.parseInt(scanner.nextLine())
                     println "Digite o índice do CANDIDATO que deseja curtir: "
-                    int cIdx = scanner.nextInt()
+                    int cIdx = Integer.parseInt(scanner.nextLine())
                     registrarInteracao(listaCurtidas, candidatos[cIdx], empresas[eIdx], false)
                     break
 
                 case 5:
+                    println "\nCADASTRO DE CANDIDATO"
+                    print "Nome: "; String nome = scanner.nextLine()
+                    print "Email: "; String email = scanner.nextLine()
+                    print "Estado: "; String estado = scanner.nextLine()
+                    print "CEP: "; String cep = scanner.nextLine()
+                    print "Descrição: "; String desc = scanner.nextLine()
+                    print "CPF: "; String cpf = scanner.nextLine()
+                    print "Idade: "; int idade = Integer.parseInt(scanner.nextLine())
+                    print "Competências (separadas por vírgula): "
+                    List skills = scanner.nextLine().split(',').collect { it.trim() }
+
+                    candidatos.add(new Candidato(nome, email, estado, cep, desc, cpf, idade, skills))
+                    println "Sucesso: Candidato cadastrado!"
+                    break
+
+                case 6:
+                    println "\nCADASTRO DE EMPRESA"
+                    print "Nome: "; String nomeE = scanner.nextLine()
+                    print "Email: "; String emailE = scanner.nextLine()
+                    print "Estado: "; String estadoE = scanner.nextLine()
+                    print "CEP: "; String cepE = scanner.nextLine()
+                    print "Descrição: "; String descE = scanner.nextLine()
+                    print "CNPJ: "; String cnpj = scanner.nextLine()
+                    print "País: "; String pais = scanner.nextLine()
+                    print "Requisitos (separados por vírgula): "
+                    List reqs = scanner.nextLine().split(',').collect { it.trim() }
+
+                    empresas.add(new Empresa(nomeE, emailE, estadoE, cepE, descE, cnpj, pais, reqs))
+                    println "Sucesso: Empresa cadastrada!"
+                    break
+
+                case 7:
                     println "Finalizando sistema... Até logo!"
                     break
             }
@@ -87,15 +122,15 @@ class LinketinderApp {
 
         if (ehCandidato) {
             interacao.candidatoCurtiu = true
-            println "\nSucesso: O candidato ${c.nome} demonstrou interesse na ${e.nome}!"
+            println "\nInteresse registrado: ${c.nome} curtiu ${e.nome}."
         } else {
             interacao.empresaCurtiu = true
-            println "\nSucesso: A empresa ${e.nome} demonstrou interesse em ${c.nome}!"
+            println "\nInteresse registrado: ${e.nome} curtiu ${c.nome}."
         }
 
         if (interacao.isMatch()) {
-            println "MATCH DETECTADO!"
-            println "O candidato ${c.nome} e a empresa ${e.nome} se curtiram!"
+            println "\nMATCH DETECTADO!"
+            println "Contato estabelecido entre ${c.nome} e ${e.nome}!"
         }
     }
 }
