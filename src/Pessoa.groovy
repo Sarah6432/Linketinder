@@ -32,7 +32,7 @@ class Candidato extends Pessoa {
 
     @Override
     void exibirPerfil() {
-        println "--- Candidato: $nome ($idade anos) ---"
+        println "Candidato: $nome ($idade anos)"
         println "Email: $email | CPF: $cpf"
         println "Local: $estado - CEP: $cep"
         println "Bio: $descricao"
@@ -52,7 +52,7 @@ class Empresa extends Pessoa {
 
     @Override
     void exibirPerfil() {
-        println "--- Empresa: $nome ---"
+        println "Empresa: $nome"
         println "Email: $email | CNPJ: $cnpj"
         println "Local: $pais ($estado) - CEP: $cep"
         println "Sobre: $descricao"
