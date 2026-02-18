@@ -1,15 +1,22 @@
 class Curtida {
     Candidato candidato
-    Empresa empresa
-    boolean candidatoCurtiu = false
+    Vaga vaga
     boolean empresaCurtiu = false
 
-    Curtida(Candidato candidato, Empresa empresa) {
+    Curtida(Candidato candidato, Vaga vaga) {
         this.candidato = candidato
-        this.empresa = empresa
+        this.vaga = vaga
     }
 
     boolean isMatch() {
-        return candidatoCurtiu && empresaCurtiu
+        return empresaCurtiu
+    }
+
+    void exibirParaEmpresa(int index) {
+        if (isMatch()) {
+            println "[$index] MATCH! Nome: ${candidato.nome} | Email: ${candidato.email} | Skills: ${candidato.competencias.join(', ')}"
+        } else {
+            println "[$index] [Candidato Anônimo] | Skills: ${candidato.competencias.join(', ')}"
+        }
     }
 }
