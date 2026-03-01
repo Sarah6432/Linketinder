@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/style.css">
+    <title>Cadastro Empresa</title>
+</head>
+<body>
+    <header class="navbar">
+        <h1>Linketinder Empresa</h1>
+        <nav><a href="index.html" class="btn btn-outline" style="width: auto;">Voltar</a></nav>
+    </header>
+
+    <main class="container">
+        <form id="formCadastroEmpresa">
+            <h2>Cadastro da Empresa</h2>
+            <input type="text" id="nomeEmpresa" placeholder="Razão Social" required>
+            <input type="text" id="cnpj" placeholder="CNPJ" required>
+            <input type="email" id="emailEmpresa" placeholder="E-mail Corporativo" required>
+            <input type="text" id="estado" placeholder="Estado (Ex: BA)">
+            <input type="text" id="cep" placeholder="CEP">
+            <textarea id="descricaoEmpresa" placeholder="Descrição da Empresa"></textarea>
+            <button type="submit" class="btn">Cadastrar Empresa</button>
+        </form>
+    </main>
+
+    <script type="module" src="dist/app.js"></script>
+</body>
+</html>

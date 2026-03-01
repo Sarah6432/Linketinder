@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linketinder | Dashboard</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header class="navbar">
+        <h1>Linketinder</h1>
+        <nav>
+            <span id="meuPerfil" style="margin-right: 20px; font-weight: 600; color: var(--primary);"></span>
+            <a href="index.html" class="btn btn-outline" style="width: auto; padding: 5px 15px;">Sair</a>
+        </nav>
+    </header>
+
+    <main class="container">
+        <section class="chart-section">
+            <h2 style="margin-bottom: 20px;">Análise de Competências</h2>
+            <p style="color: var(--text-muted); margin-bottom: 20px;">Visão geral das habilidades dos candidatos cadastrados.</p>
+            <canvas id="graficoSkills"></canvas>
+        </section>
+
+        <div class="cards-grid">
+            <section class="lista-anonima">
+                <h2 style="margin-bottom: 20px;">Candidatos Disponíveis</h2>
+                <div id="listaCandidatos">
+                    </div>
+            </section>
+
+            <section class="lista-vagas">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h2>Vagas em Aberto</h2>
+                    </div>
+                <div id="containerVagas">
+                    </div>
+            </section>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Linketinder - Sarah Lima</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script type="module" src="dist/app.js"></script>
+</body>
+</html>

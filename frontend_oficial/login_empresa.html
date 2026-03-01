@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linketinder | Login Empresa</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header class="navbar">
+        <h1>Linketinder Empresas</h1>
+        <nav><a href="index.html" class="btn btn-outline" style="width: auto; padding: 5px 15px;">Voltar</a></nav>
+    </header>
+
+    <main class="container">
+        <form id="formLoginEmpresa">
+            <h2>Acesso Corporativo</h2>
+            <p style="text-align: center; color: var(--text-muted); margin-bottom: 20px;">Entre com o CNPJ da empresa.</p>
+            
+            <label for="loginCnpj">CNPJ:</label>
+            <input type="text" id="loginCnpj" placeholder="00.000.000/0000-00" required>
+            
+            <button type="submit" class="btn">Acessar Painel</button>
+            
+            <p style="margin-top: 20px; text-align: center;">
+                Empresa nova? <a href="cadastroempresa.html" style="color: var(--primary);">Registre sua empresa</a>
+            </p>
+        </form>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Linketinder - Sarah Lima</p>
+    </footer>
+
+    <script type="module" src="dist/app.js"></script>
+</body>
+</html>

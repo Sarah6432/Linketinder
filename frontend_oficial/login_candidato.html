@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linketinder | Login Candidato</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header class="navbar">
+        <h1>Linketinder</h1>
+        <nav><a href="index.html" class="btn btn-outline" style="width: auto; padding: 5px 15px;">Voltar</a></nav>
+    </header>
+
+    <main class="container">
+        <form id="formLoginCandidato">
+            <h2>Acesso do Candidato</h2>
+            <p style="text-align: center; color: var(--text-muted); margin-bottom: 20px;">Entre com seu CPF para ver as vagas.</p>
+            
+            <label for="loginCpf">CPF:</label>
+            <input type="text" id="loginCpf" placeholder="000.000.000-00" required>
+            
+            <button type="submit" class="btn">Entrar no Perfil</button>
+            
+            <p style="margin-top: 20px; text-align: center;">
+                Ainda não tem conta? <a href="cadastro.html" style="color: var(--primary);">Cadastre-se aqui</a>
+            </p>
+        </form>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Linketinder - Sarah Lima</p>
+    </footer>
+
+    <script type="module" src="dist/app.js"></script>
+</body>
+</html>
