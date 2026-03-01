@@ -1,4 +1,5 @@
-Linketinder - Projeto ZG-Hero (MVP)
+Linketinder - Projeto ZG-Hero (MVP):
+
 A proposta é criar um sistema de contratação simplificado, inspirado na dinâmica de "Match" do Tinder e no perfil profissional do LinkedIn. O projeto evoluiu de uma aplicação de console em Groovy para uma interface web moderna.
 
 🚀 Sobre o Projeto
