@@ -116,6 +116,7 @@ function renderizarTelaPerfil() {
     const containerCandidatos = document.getElementById('listaCandidatos');
     const containerVagas = document.getElementById('containerVagas');
     const labelPerfil = document.getElementById('meuPerfil');
+    const btnGerenciarVagas = document.getElementById('btnGerenciarVagas');
     const secaoGrafico = document.querySelector('.chart-section');
     const secaoCandidatos = document.querySelector('.lista-anonima');
     const secaoVagas = document.querySelector('.lista-vagas');
@@ -123,6 +124,8 @@ function renderizarTelaPerfil() {
         const user = JSON.parse(sessionStorage.getItem('usuarioLogado') || '{}');
         if (labelPerfil)
             labelPerfil.innerText = `Olá, ${user.nome || 'Candidato'}`;
+        if (btnGerenciarVagas)
+            btnGerenciarVagas.style.display = 'none';
         if (secaoGrafico)
             secaoGrafico.style.display = 'none';
         if (secaoCandidatos)
@@ -134,6 +137,8 @@ function renderizarTelaPerfil() {
         const emp = JSON.parse(sessionStorage.getItem('empresaLogada') || '{}');
         if (labelPerfil)
             labelPerfil.innerText = `Painel: ${emp.nome || 'Empresa'}`;
+        if (btnGerenciarVagas)
+            btnGerenciarVagas.style.display = 'inline-block';
         if (secaoVagas)
             secaoVagas.style.display = 'none';
         if (secaoGrafico)
@@ -147,9 +152,12 @@ function renderizarTelaPerfil() {
         containerCandidatos.innerHTML = candidatos.length === 0 ? "<p>Nenhum candidato válido.</p>" :
             candidatos.map(c => `
             <div class="item-anonimo">
-                <h3>Candidato Anônimo</h3>
-                <p>Skills: ${c.skills.join(', ')}</p>
-              <button class="btn" style="margin-top: 10px">Dar Match</button>
+                <h3 style="margin-bottom: 3px;">Candidato Anônimo</h3>
+               <div class="tags-container">
+                    ${c.skills.map((s) => `<span class="tag">${s}</span>`).join('')}
+                </div>
+                <p style="font-size:15px; font-weight: bold; text-align: justify;">Detalhes: ${c.detalhes || ''}</p>
+              <button class="btn" style="margin-top: 10px; font-size:14px;">Dar Match</button>
             </div>
         `).join('');
     }

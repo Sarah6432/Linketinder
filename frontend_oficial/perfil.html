@@ -11,20 +11,23 @@
         <h1>Linketinder</h1>
         <nav>
             <span id="meuPerfil" style="margin-right: 20px; font-weight: 600; color: var(--primary);"></span>
+            <a href="vagas.html" id="btnGerenciarVagas" class="btn btn-primary" style="width: auto; padding: 8px 15px; text-decoration: none;">
+            Gerenciar Vagas
+            </a>
             <a href="index.html" class="btn btn-outline" style="width: auto; padding: 5px 15px;">Sair</a>
         </nav>
     </header>
 
     <main class="container">
         <section class="chart-section">
-            <h2 style="margin-bottom: 20px;">Análise de Competências</h2>
-            <p style="color: var(--text-muted); margin-bottom: 20px;">Visão geral das habilidades dos candidatos cadastrados.</p>
+            <h2 style="margin-bottom: 20px; text-align: center;">Análise de Competências</h2>
+            <p style="color: var(--text-muted); margin-bottom: 20px; text-align: center;">Visão geral das habilidades dos candidatos cadastrados.</p>
             <canvas id="graficoSkills"></canvas>
         </section>
 
         <div class="cards-grid">
             <section class="lista-anonima">
-                <h2 style="margin-bottom: 20px;">Candidatos Disponíveis</h2>
+                <h2 style="margin-bottom: 20px; text-align: center; margin-left: 10px;">Candidatos Disponíveis</h2>
                 <div id="listaCandidatos">
                     </div>
             </section>
