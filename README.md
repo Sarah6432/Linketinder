@@ -1,46 +1,52 @@
-# Linketinder - Projeto ZG-Hero (MVP)
+Linketinder - Projeto ZG-Hero (MVP):
 
-A proposta é criar um sistema de contratação simplificado, inspirado na dinâmica de "Match" do Tinder e no perfil profissional do LinkedIn, utilizando a linguagem **Groovy**.
+A proposta é criar um sistema de contratação simplificado, inspirado na dinâmica de "Match" do Tinder e no perfil profissional do LinkedIn. O projeto evoluiu de uma aplicação de console em Groovy para uma interface web moderna.
 
-## 🚀 Sobre o Projeto
-O Dr. Antônio Paçoca identificou que recrutadores perdem talentos por conta de algoritmos tendenciosos. O **Linketinder** surge para facilitar o encontro entre:
-- **Candidatos:** Que expõem suas competências técnicas e descrição pessoal.
-- **Empresas:** Que listam os requisitos desejados para suas vagas.
+🚀 Sobre o Projeto
+O Dr. Antônio Paçoca identificou que recrutadores perdem talentos por conta de algoritmos tendenciosos. O Linketinder surge para facilitar o encontro entre:
+Candidatos: Expõem competências técnicas e descrição pessoal.
+Empresas: Listam requisitos desejados para suas vagas.
 
-## 🛠️ Tecnologias Utilizadas
-- **Linguagem:** Groovy (versão 4.0+)
-- **Paradigma:** Orientação a Objetos (POO)
-- **SDK:** Java JDK 17 ou superior
+🛠️ Tecnologias Utilizadas
+Backend (Lógica de Negócio)
+Linguagem: Groovy (versão 4.0+)
 
-## 🏗️ Estrutura do Código
-O sistema foi estruturado seguindo princípios de POO:
-- **Interface `IPessoa`:** Define os comportamentos básicos.
-- **Classe Abstrata `Pessoa`:** Reúne atributos comuns (Nome, E-mail, CEP, Competências, etc).
-- **Herança:** As classes `Candidato` e `Empresa` herdam de `Pessoa`, garantindo a reutilização de código e organização.
-- **Estrutura de Dados:** Utilização de `List` (ArrayList) para armazenamento em memória dos perfis pré-cadastrados.
+SDK: Java JDK 17 ou superior
 
-## 🏃 Como Executar o Projeto
-1. **Pré-requisitos:** Certifique-se de ter o Groovy instalado em sua máquina.
-   - Você pode verificar usando o comando: `groovy -v`
-2. **Clone o repositório:**
-   ```bash
-   https://github.com/Sarah6432/Linketinder
-   
- ## 🚀 Atualização: Implementação do Sistema de Match
+Frontend (Interface Web)
+Linguagem: TypeScript (compilado para JavaScript ES6)
+Estilização: CSS3 Moderno (Flexbox, Grid, Variáveis e Media Queries para Responsividade)
+Gráficos: Chart.js para visualização de dados de competências
+Persistência: LocalStorage e SessionStorage para simulação de banco de dados no navegador
 
-Nesta nova etapa do projeto Linketinder, foi implementada a funcionalidade principal da aplicação: o sistema de curtidas e a detecção de interesse mútuo entre candidatos e empresas.
+🏗️ Estrutura do Código
+O sistema segue princípios de POO e organização modular:
+Interface IPessoa: Define comportamentos básicos.
+Herança: Classes Candidato e Empresa herdam de uma base comum, garantindo reutilização.
+Validação de Dados: Implementada lógica no frontend para impedir cadastros com campos vazios ou apenas espaços.
+Responsividade: Media queries garantem que os cards de login e visualização fiquem centralizados em dispositivos móveis.
 
-### 🛠️ O que há de novo:
+💻 Implementação do Frontend
+Nesta etapa, a aplicação ganhou uma interface visual completa:
+Tela de Login/Cadastro: Fluxos distintos para Candidatos e Empresas com validação de inputs.
+Dashboard de Vagas: Cards estendidos e estilizados com foco em legibilidade e interatividade.
+Painel da Empresa: Visualização de gráficos de skills dos candidatos utilizando Chart.js.
+Sistema de Match: Botão interativo nos cards de candidatos para simular o interesse da empresa.
 
-* **Lógica de Interação Intermediária:** Criada a classe `Curtida`, que funciona como uma ponte entre os objetos `Candidato` e `Empresa`. Ela armazena o estado do interesse de cada parte (booleano).
-* **Evento de Match:** O sistema agora detecta automaticamente quando um candidato curtiu uma empresa **e** essa mesma empresa curtiu o candidato de volta. 
-* **Anonimato vs. Identificação:** Seguindo o conceito do Dr. Antônio Paçoca, o sistema permite que as partes interajam com base em competências, disparando uma notificação visual de "Match" quando a conexão é estabelecida.
-* **Menu Interativo Expandido:** O terminal agora conta com opções de simulação (3 e 4) para testar os fluxos de curtida e validar a regra de negócio.
+🏃 Como Executar e Testar
+Testando o Frontend (Web)
+Navegue até a pasta frontend_oficial.
+Certifique-se de que o TypeScript está instalado em seu sistema: npm install -g typescript.
+Compile os arquivos .ts para a pasta dist: tsc.
+Abra o arquivo index.html em seu navegador (recomendado utilizar a extensão Live Server no VS Code).
 
-### 🧪 Como Testar o Match:
-1. Execute o programa: `groovy Linketinder.groovy`.
-2. Escolha a **opção 3** (Candidato curte Empresa), informe o índice do candidato (ex: 0) e o índice da empresa (ex: 4).
-3. Escolha a **opção 4** (Empresa curte Candidato), informe o índice da empresa (ex: 4) e o índice do candidato (ex: 0).
-4. O console exibirá o alerta de **MATCH DETECTADO!**.  
-  - git clone [https://github.com/Sarah6432/Linketinder.git](https://github.com/Sarah6432/Linketinder.git)
-   
+Fluxo de Teste:
+Realize o cadastro de um novo candidato (campos vazios serão bloqueados).
+Faça login como Empresa para visualizar o gráfico de competências dos candidatos cadastrados.
+No perfil de empresa, utilize o botão "Dar Match" nos cards de candidatos.
+
+Testando o Backend (Console)
+Certifique-se de ter o Groovy instalado: groovy -v.
+Execute o programa: groovy Linketinder.groovy.
+
+Escolha a opção 3 (Candidato curte Empresa) e a opção 4 (Empresa curte Candidato) com os mesmos índices para detectar um MATCH no console.
