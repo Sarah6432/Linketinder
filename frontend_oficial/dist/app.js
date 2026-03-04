@@ -1,4 +1,12 @@
 import { banco } from './storage.js';
+const Regras = {
+    cpf: /^\d{3}\.?\d{3}\.?\d{3}-?\d{2}$/,
+    cnpj: /^\d{2}\.?\d{3}\.?\d{3}\/?\d{4}-?\d{2}$/,
+    email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+};
+const validarCPF = (valor) => Regras.cpf.test(valor);
+const validarCNPJ = (valor) => Regras.cnpj.test(valor);
+const validarEmail = (valor) => Regras.email.test(valor);
 const formCandidato = document.getElementById('formCadastro');
 const formEmpresa = document.getElementById('formCadastroEmpresa');
 const formVaga = document.getElementById('formVaga');
@@ -14,6 +22,10 @@ if (formCandidato) {
         const detalhes = document.getElementById('detalhes').value.trim();
         if (!nome || !cpf || !skillsRaw) {
             alert('Por favor, preencha todos os campos obrigatórios.');
+            return;
+        }
+        if (!validarCPF(cpf)) {
+            alert('CPF inválido! Use o formato 000.000.000-00.');
             return;
         }
         const novoCandidato = {
@@ -40,6 +52,14 @@ if (formEmpresa) {
             alert('Preencha todos os campos da empresa.');
             return;
         }
+        if (!validarCNPJ(cnpj)) {
+            alert('CNPJ inválido!');
+            return;
+        }
+        if (!validarEmail(email)) {
+            alert('E-mail inválido!');
+            return;
+        }
         const novaEmpresa = {
             id: Date.now(),
             nome,
@@ -58,6 +78,10 @@ if (formLoginCandidato) {
     formLoginCandidato.addEventListener('submit', (e) => {
         e.preventDefault();
         const cpf = document.getElementById('loginCpf').value.trim();
+        if (!validarCPF(cpf)) {
+            alert('Formato de CPF inválido.');
+            return;
+        }
         const user = banco.listarCandidatos().find(u => u.cpf === cpf);
         if (user) {
             sessionStorage.setItem('usuarioLogado', JSON.stringify(user));
@@ -72,6 +96,10 @@ if (formLoginEmpresa) {
     formLoginEmpresa.addEventListener('submit', (e) => {
         e.preventDefault();
         const cnpj = document.getElementById('loginCnpj').value.trim();
+        if (!validarCNPJ(cnpj)) {
+            alert('Formato de CNPJ inválido.');
+            return;
+        }
         const empresas = JSON.parse(localStorage.getItem('empresas') || '[]');
         const emp = empresas.find((e) => e.cnpj === cnpj);
         if (emp) {
@@ -104,7 +132,8 @@ if (formVaga) {
 function limparCandidatosInvalidos() {
     const candidatos = banco.listarCandidatos();
     const candidatosFiltrados = candidatos.filter(c => c.nome && c.nome.trim() !== "" &&
-        c.cpf && c.cpf.trim() !== "");
+        c.cpf && c.cpf.trim() !== "" &&
+        validarCPF(c.cpf));
     if (candidatos.length !== candidatosFiltrados.length) {
         localStorage.setItem('candidatos', JSON.stringify(candidatosFiltrados));
     }
