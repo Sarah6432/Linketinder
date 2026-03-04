@@ -4,11 +4,13 @@ import { banco } from './storage.js';
 declare var Chart: any;
 
 const Regras = {
+    nome: /^[A-Za-zÀ-ÖØ-öø-ÿ\s]+$/,
     cpf: /^\d{3}\.?\d{3}\.?\d{3}-?\d{2}$/,
     cnpj: /^\d{2}\.?\d{3}\.?\d{3}\/?\d{4}-?\d{2}$/,
     email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 };
 
+const validarNome = (valor: string) => Regras.nome.test(valor);
 const validarCPF = (valor: string) => Regras.cpf.test(valor);
 const validarCNPJ = (valor: string) => Regras.cnpj.test(valor);
 const validarEmail = (valor: string) => Regras.email.test(valor);
@@ -31,6 +33,11 @@ if (formCandidato) {
 
         if (!nome || !cpf || !skillsRaw) {
             alert('Por favor, preencha todos os campos obrigatórios.');
+            return;
+        }
+
+        if (!validarNome(nome)) {
+            alert('O nome deve conter apenas letras.');
             return;
         }
 
@@ -65,6 +72,11 @@ if (formEmpresa) {
 
         if (!nome || !cnpj || !email) {
             alert('Preencha todos os campos da empresa.');
+            return;
+        }
+
+        if (!validarNome(nome)) {
+            alert('O nome da empresa deve conter apenas letras e espaços.');
             return;
         }
 

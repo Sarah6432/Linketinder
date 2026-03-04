@@ -1,9 +1,11 @@
 import { banco } from './storage.js';
 const Regras = {
+    nome: /^[A-Za-zÀ-ÖØ-öø-ÿ\s]+$/,
     cpf: /^\d{3}\.?\d{3}\.?\d{3}-?\d{2}$/,
     cnpj: /^\d{2}\.?\d{3}\.?\d{3}\/?\d{4}-?\d{2}$/,
     email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 };
+const validarNome = (valor) => Regras.nome.test(valor);
 const validarCPF = (valor) => Regras.cpf.test(valor);
 const validarCNPJ = (valor) => Regras.cnpj.test(valor);
 const validarEmail = (valor) => Regras.email.test(valor);
@@ -22,6 +24,10 @@ if (formCandidato) {
         const detalhes = document.getElementById('detalhes').value.trim();
         if (!nome || !cpf || !skillsRaw) {
             alert('Por favor, preencha todos os campos obrigatórios.');
+            return;
+        }
+        if (!validarNome(nome)) {
+            alert('O nome deve conter apenas letras.');
             return;
         }
         if (!validarCPF(cpf)) {
@@ -50,6 +56,10 @@ if (formEmpresa) {
         const email = document.getElementById('emailEmpresa').value.trim();
         if (!nome || !cnpj || !email) {
             alert('Preencha todos os campos da empresa.');
+            return;
+        }
+        if (!validarNome(nome)) {
+            alert('O nome da empresa deve conter apenas letras e espaços.');
             return;
         }
         if (!validarCNPJ(cnpj)) {
