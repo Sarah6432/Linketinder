@@ -19,10 +19,11 @@ if (formCandidato) {
         e.preventDefault();
         const nome = document.getElementById('nome').value.trim();
         const cpf = document.getElementById('cpf').value.trim();
+        const email = document.getElementById('email').value.trim();
         const skillsRaw = document.getElementById('skills').value.trim();
         const formacao = document.getElementById('formacao').value.trim();
         const detalhes = document.getElementById('detalhes').value.trim();
-        if (!nome || !cpf || !skillsRaw) {
+        if (!nome || !cpf || !skillsRaw || !email) {
             alert('Por favor, preencha todos os campos obrigatórios.');
             return;
         }
@@ -34,10 +35,14 @@ if (formCandidato) {
             alert('CPF inválido! Use o formato 000.000.000-00.');
             return;
         }
+        if (!validarEmail(email)) {
+            alert('Email inválido! Use o @.');
+            return;
+        }
         const novoCandidato = {
             id: Date.now(),
             nome,
-            email: "contato@linketinder.com",
+            email: email,
             skills: skillsRaw.split(',').map(s => s.trim()).filter(s => s !== ""),
             cpf,
             detalhes: detalhes || "Perfil criado",

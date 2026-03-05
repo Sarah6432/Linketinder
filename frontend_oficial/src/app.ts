@@ -55,7 +55,7 @@ if (formCandidato) {
         const novoCandidato: Candidato = {
             id: Date.now(),
             nome,
-            email: email || "contato@linketinder.com",
+            email: email,
             skills: skillsRaw.split(',').map(s => s.trim()).filter(s => s !== ""),
             cpf,
             detalhes: detalhes || "Perfil criado",
