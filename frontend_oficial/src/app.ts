@@ -27,11 +27,12 @@ if (formCandidato) {
         
         const nome = (document.getElementById('nome') as HTMLInputElement).value.trim();
         const cpf = (document.getElementById('cpf') as HTMLInputElement).value.trim();
+        const email = (document.getElementById('email') as HTMLInputElement).value.trim();
         const skillsRaw = (document.getElementById('skills') as HTMLInputElement).value.trim();
         const formacao = (document.getElementById('formacao') as HTMLInputElement).value.trim();
         const detalhes = (document.getElementById('detalhes') as HTMLTextAreaElement).value.trim();
 
-        if (!nome || !cpf || !skillsRaw) {
+        if (!nome || !cpf || !skillsRaw || !email) {
             alert('Por favor, preencha todos os campos obrigatórios.');
             return;
         }
@@ -46,10 +47,15 @@ if (formCandidato) {
             return;
         }
 
+        if(!validarEmail(email)){
+           alert('Email inválido! Use o @.');
+           return; 
+        }
+
         const novoCandidato: Candidato = {
             id: Date.now(),
             nome,
-            email: "contato@linketinder.com",
+            email: email || "contato@linketinder.com",
             skills: skillsRaw.split(',').map(s => s.trim()).filter(s => s !== ""),
             cpf,
             detalhes: detalhes || "Perfil criado",
