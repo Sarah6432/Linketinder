@@ -8,10 +8,10 @@
     // Environment Settings
     // See also https://aka.ms/tsconfig/module
     "module": "ESNext",
-   "target": "ES6", // Ou a versão que você preferir
+   "target": "ES6",
     "lib": [
       "dom",
-      "es2017" // Adicione isso aqui para liberar o Object.values
+      "es2017" 
     ],
     // For nodejs:
     // "lib": ["esnext"],
