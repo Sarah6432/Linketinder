@@ -168,7 +168,12 @@ if (formVaga) {
             return;
         }
 
-        const novaVaga = { id: Date.now(), titulo, desc, skills: skills.split(',').map(s => s.trim()) };
+        const novaVaga = { 
+        id: Date.now(), 
+        titulo, 
+        desc, 
+        skills: skills.split(',').map(s => s.trim()) 
+    };
         const vagas = JSON.parse(localStorage.getItem('vagas') || '[]');
         vagas.push(novaVaga);
         localStorage.setItem('vagas', JSON.stringify(vagas));
@@ -201,7 +206,6 @@ function renderizarTelaPerfil() {
     const containerVagas = document.getElementById('containerVagas');
     const labelPerfil = document.getElementById('meuPerfil');
     const btnGerenciarVagas = document.getElementById('btnGerenciarVagas') as HTMLElement;
-
     const secaoGrafico = document.querySelector('.chart-section') as HTMLElement;
     const secaoCandidatos = document.querySelector('.lista-anonima') as HTMLElement;
     const secaoVagas = document.querySelector('.lista-vagas') as HTMLElement;

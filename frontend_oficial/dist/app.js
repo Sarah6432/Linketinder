@@ -136,7 +136,12 @@ if (formVaga) {
             alert('Título e Skills são obrigatórios para a vaga.');
             return;
         }
-        const novaVaga = { id: Date.now(), titulo, desc, skills: skills.split(',').map(s => s.trim()) };
+        const novaVaga = {
+            id: Date.now(),
+            titulo,
+            desc,
+            skills: skills.split(',').map(s => s.trim())
+        };
         const vagas = JSON.parse(localStorage.getItem('vagas') || '[]');
         vagas.push(novaVaga);
         localStorage.setItem('vagas', JSON.stringify(vagas));
