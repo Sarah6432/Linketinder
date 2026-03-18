@@ -1,3 +1,4 @@
+
 class Curtida {
     Candidato candidato
     Vaga vaga

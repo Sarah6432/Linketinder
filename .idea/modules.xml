@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Linketinder.iml" filepath="$PROJECT_DIR$/Linketinder.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Linketinder.iml" filepath="$PROJECT_DIR$/.idea/modules/Linketinder.iml" />
     </modules>
   </component>
 </project>
