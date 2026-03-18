@@ -1,52 +1,71 @@
-Linketinder - Projeto ZG-Hero (MVP):
+🚀 Linketinder - Sistema de Recrutamento (Full Stack MVP)
+O Linketinder é um ecossistema de contratação simplificado que une a dinâmica de "Match" à curadoria técnica de talentos. O projeto evoluiu de uma estrutura em memória para uma aplicação Data-Driven, utilizando banco de dados relacional para gerenciar perfis, vagas e interações.
 
-A proposta é criar um sistema de contratação simplificado, inspirado na dinâmica de "Match" do Tinder e no perfil profissional do LinkedIn. O projeto evoluiu de uma aplicação de console em Groovy para uma interface web moderna.
+🛠️ Tecnologias e Arquitetura
+Backend & Persistência
+Linguagem: Groovy (4.0+) / Java JDK 21.
 
-🚀 Sobre o Projeto
-O Dr. Antônio Paçoca identificou que recrutadores perdem talentos por conta de algoritmos tendenciosos. O Linketinder surge para facilitar o encontro entre:
-Candidatos: Expõem competências técnicas e descrição pessoal.
-Empresas: Listam requisitos desejados para suas vagas.
+Banco de Dados: PostgreSQL.
 
-🛠️ Tecnologias Utilizadas
-Backend (Lógica de Negócio)
-Linguagem: Groovy (versão 4.0+)
+Arquitetura: Padrão DAO (Data Access Object) para isolamento da lógica de persistência.
 
-SDK: Java JDK 17 ou superior
+Drivers: JDBC para integração Groovy-SQL.
 
 Frontend (Interface Web)
-Linguagem: TypeScript (compilado para JavaScript ES6)
-Estilização: CSS3 Moderno (Flexbox, Grid, Variáveis e Media Queries para Responsividade)
-Gráficos: Chart.js para visualização de dados de competências
-Persistência: LocalStorage e SessionStorage para simulação de banco de dados no navegador
+Linguagem: TypeScript (ES6).
 
-🏗️ Estrutura do Código
-O sistema segue princípios de POO e organização modular:
-Interface IPessoa: Define comportamentos básicos.
-Herança: Classes Candidato e Empresa herdam de uma base comum, garantindo reutilização.
-Validação de Dados: Implementada lógica no frontend para impedir cadastros com campos vazios ou apenas espaços.
-Responsividade: Media queries garantem que os cards de login e visualização fiquem centralizados em dispositivos móveis.
+Estilização: CSS3 Moderno (Flexbox, Grid, Variáveis).
 
-💻 Implementação do Frontend
-Nesta etapa, a aplicação ganhou uma interface visual completa:
-Tela de Login/Cadastro: Fluxos distintos para Candidatos e Empresas com validação de inputs.
-Dashboard de Vagas: Cards estendidos e estilizados com foco em legibilidade e interatividade.
-Painel da Empresa: Visualização de gráficos de skills dos candidatos utilizando Chart.js.
-Sistema de Match: Botão interativo nos cards de candidatos para simular o interesse da empresa.
+Gráficos: Chart.js para analytics de competências.
 
-🏃 Como Executar e Testar
-Testando o Frontend (Web)
-Navegue até a pasta frontend_oficial.
-Certifique-se de que o TypeScript está instalado em seu sistema: npm install -g typescript.
-Compile os arquivos .ts para a pasta dist: tsc.
-Abra o arquivo index.html em seu navegador (recomendado utilizar a extensão Live Server no VS Code).
+🌟 Novas Funcionalidades (V2.0 - Database Integrated)
+Persistência Relacional: Todo o fluxo de Candidatos, Empresas e Vagas agora é armazenado permanentemente no PostgreSQL.
 
-Fluxo de Teste:
-Realize o cadastro de um novo candidato (campos vazios serão bloqueados).
-Faça login como Empresa para visualizar o gráfico de competências dos candidatos cadastrados.
-No perfil de empresa, utilize o botão "Dar Match" nos cards de candidatos.
+Gerenciamento de Competências (N:N): Sistema de normalização onde competências são entidades únicas vinculadas a múltiplos candidatos e vagas.
 
-Testando o Backend (Console)
-Certifique-se de ter o Groovy instalado: groovy -v.
-Execute o programa: groovy Linketinder.groovy.
+Fluxo de Match Real: * Candidatos: Visualizam vagas (apenas descrição e requisitos) e registram interesse.
 
-Escolha a opção 3 (Candidato curte Empresa) e a opção 4 (Empresa curte Candidato) com os mesmos índices para detectar um MATCH no console.
+Empresas: Visualizam candidatos interessados (foco em competências/anonimato) e retribuem o interesse.
+
+Algoritmo de Match: Identificação automática de interesse mútuo via queries SQL de interseção.
+
+CRUD Completo: Interfaces de terminal para Criar, Listar, Atualizar e Deletar (CRUD) qualquer entidade do sistema com integridade referencial (ON DELETE CASCADE).
+
+🏗️ Estrutura do Banco de Dados
+O projeto utiliza uma estrutura relacional otimizada:
+
+candidatos / empresas: Entidades principais de usuários.
+
+vagas: Vinculadas a empresas.
+
+competencias: Tabela mestra de habilidades técnicas.
+
+candidato_competencias / vagas_competencias: Tabelas de relacionamento muitos-para-muitos.
+
+curtidas_candidato / curtidas_empresa: Registro de interações para cálculo de Match.
+
+🏃 Como Executar
+1. Configuração do Banco de Dados
+Certifique-se de ter o PostgreSQL instalado.
+
+Crie um banco de dados chamado linketinder.
+
+Execute os scripts SQL presentes na pasta /sql (ou crie as tabelas conforme as definições de classe).
+
+2. Executando o Backend (Console)
+Configure suas credenciais na classe Conexao.groovy.
+
+Execute via Gradle:
+
+Bash
+./gradlew run
+Utilize o menu interativo para navegar entre as áreas de Candidato, Empresa e Gerenciamento.
+
+3. Testando o Frontend (Web)
+Navegue até frontend_oficial.
+
+Compile o TypeScript: tsc.
+
+Abra index.html via Live Server.
+
+Autora: Sarah Silva Lima 
