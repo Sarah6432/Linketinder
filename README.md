@@ -4,6 +4,7 @@ O Linketinder é um ecossistema de contratação simplificado que une a dinâmic
 🛠️ Tecnologias e Arquitetura
 Backend & Persistência
 Linguagem: Groovy (4.0+) / Java JDK 21.
+Gradle 5.1.1 para organização do projeto.
 
 Banco de Dados: PostgreSQL.
 
@@ -43,6 +44,9 @@ competencias: Tabela mestra de habilidades técnicas.
 candidato_competencias / vagas_competencias: Tabelas de relacionamento muitos-para-muitos.
 
 curtidas_candidato / curtidas_empresa: Registro de interações para cálculo de Match.
+
+ATUALIZAÇÃO: 
+Adicionei o gradle para melhor organização de depêndencias e pastas do projeto!
 
 🏃 Como Executar
 1. Configuração do Banco de Dados
