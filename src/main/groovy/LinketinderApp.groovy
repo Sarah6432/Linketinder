@@ -90,7 +90,7 @@ class LinketinderApp {
     }
 
     private static void fluxoAreaEmpresa(Scanner scanner, EmpresaService service, EmpresaDAO eDAO, CandidatoDAO cDAO) {
-        println "\n1. Criar Vaga | 2. Listar Minhas Vagas | 3. Atualizar Vaga | 4. Deletar Vaga | 5. Ver Interessados"
+        println "\n1. Criar Vaga | 2. Listar Minhas Vagas | 3. Atualizar Vaga | 4. Deletar Vaga"
         int op = Integer.parseInt(scanner.nextLine())
         print "ID da sua Empresa: "; int idEmp = Integer.parseInt(scanner.nextLine())
 
@@ -112,12 +112,6 @@ class LinketinderApp {
             case 4:
                 print "ID Vaga para deletar: "; int idDel = Integer.parseInt(scanner.nextLine())
                 service.excluirVaga(idDel); break
-            case 5:
-                def interessados = eDAO.listarInteressados(idEmp)
-                interessados.each { println "ID: ${it.cand_id} | Nome: ${it.cand_nome} | Vaga: ${it.vaga_nome}" }
-                print "ID Candidato para Match (0 sair): "; int idC = Integer.parseInt(scanner.nextLine())
-                if (idC != 0) service.gerenciarInteresse(idEmp, idC, cDAO)
-                break
         }
     }
 
