@@ -71,6 +71,29 @@ O código do LinketinderApp (Interface/CLI) agora foca em interagir com o usuár
 Tratamento de Erros Profissional
 Saímos do amadorismo de "imprimir o erro na tela e continuar" para uma arquitetura onde o erro é propagado e tratado no main. Isso mantém o estado do programa consistente e evita comportamentos inesperados (Side Effects).
 
+///////////////////////////////
+Principais Correções Realizadas - SOLID
+1. Separação de Responsabilidades (SRP)
+Antes: A lógica de negócio (como decidir quais campos atualizar ou formatar strings) estava misturada com a interface no LinketinderApp ou diretamente no SQL do DAO.
+
+Depois: Criamos a camada de Service (CandidatoService, EmpresaService). Agora, o App apenas lê dados do teclado e o DAO apenas executa SQL. Toda a "inteligência" do sistema fica protegida nos Services.
+
+2. Estabilidade de Tipos e Construtores (LSP)
+Antes: As classes Candidato e Empresa tinham construtores confusos e redundantes. Ao mudar a hierarquia para uma EntidadeBase, corrigimos erros de "missing constructor" que quebravam o sistema.
+
+Depois: O uso de Herança correta permitiu que o sistema tratasse candidatos e empresas como "Pessoas", facilitando a exibição de perfis e garantindo que o construtor usado no DAO fosse o mesmo definido na classe.
+
+3. Sincronização com o Banco de Dados
+Antes: Haviam erros de digitação (typos) como data_pascimento (em vez de data_nascimento) e nomes de colunas genéricos como nome em tabelas onde o banco exigia nome_empresa ou nome_vaga.
+
+Depois: Mapeamos cada insert, update e select para bater exatamente com o seu esquema PostgreSQL, eliminando as exceções de PSQLException.
+
+4. Segregação de Interfaces (ISP)
+Antes: Os Services dependiam das classes concretas dos DAOs. Se o DAO mudasse, o Service quebrava.
+
+Depois: Criamos interfaces pequenas (IReader, IWriter, ICurtida, ICompetenciaManager). Agora, o CompetenciaService não sabe o que é um CandidatoDAO; ele só sabe que recebeu algo que "sabe vincular competências".
+///////////////////////////////////
+
 🏃 Como Executar
 1. Configuração do Banco de Dados
 Certifique-se de ter o PostgreSQL instalado.
