@@ -48,6 +48,29 @@ curtidas_candidato / curtidas_empresa: Registro de interações para cálculo de
 ATUALIZAÇÃO: 
 Adicionei o gradle para melhor organização de depêndencias e pastas do projeto!
 
+Correções para Clean Code: 
+Eliminação de Código Duplicado (DRY - Don't Repeat Yourself)
+As lógicas de exibição e gerenciamento foram centralizadas. Em vez de cada menu tentar formatar os dados do candidato, passamos a utilizar o método exibirPerfil() da classe, garantindo que qualquer mudança visual seja feita em um único lugar.
+
+Padrão AAA nos Testes (Arrange, Act, Assert)
+Refatorei os testes para que cada um tenha uma estrutura clara:
+
+Arrange: Prepara os dados (Cria o objeto).
+
+Act: Executa a ação (Salva ou curti).
+
+Assert: Verifica o resultado (Compara com o esperado).
+Isso torna o teste documentação viva do sistema.
+
+Nomes Significativos e Intencionais
+Mudei nomes de métodos de teste de InserirCandidatoNovo para shouldRegisterNewCandidatoCorrectly. O nome agora descreve o comportamento esperado, facilitando a leitura por outros desenvolvedores.
+
+Separação de Preocupações (SoC)
+O código do LinketinderApp (Interface/CLI) agora foca em interagir com o usuário, enquanto o DAO foca estritamente em SQL. A lógica de "Match" foi movida para onde pertence (regra de negócio), e não jogada dentro de uma query complexa.
+
+Tratamento de Erros Profissional
+Saímos do amadorismo de "imprimir o erro na tela e continuar" para uma arquitetura onde o erro é propagado e tratado no main. Isso mantém o estado do programa consistente e evita comportamentos inesperados (Side Effects).
+
 🏃 Como Executar
 1. Configuração do Banco de Dados
 Certifique-se de ter o PostgreSQL instalado.
