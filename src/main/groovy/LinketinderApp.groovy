@@ -137,6 +137,7 @@ class LinketinderApp {
                 def candidato = cDAO.listarTodos().find{it.id == idC}
                 if (matches.any { it.candidato == candidato?.nome }) {
                     println "Match Realizado!"
+                    candidato.exibirPerfil()
                 }
             }
         } else {

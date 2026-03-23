@@ -40,6 +40,7 @@ class CandidatoDAO implements IReader<Candidato>, IWriter<Candidato>, ICurtida, 
     @Override
     void registrarCurtida(int candidatoId, int vagaId) {
         db.execute("INSERT INTO curtidas_candidato (candidato_id, vaga_id) VALUES (?, ?) ON CONFLICT DO NOTHING", [candidatoId, vagaId])
+        println "Vaga Curtida com Sucesso!"
     }
 
     @Override
