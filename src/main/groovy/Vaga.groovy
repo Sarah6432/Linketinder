@@ -1,5 +1,5 @@
 class Vaga {
-    int id // Adicionado para identificar a vaga no banco (PK)
+    int id
     String nome
     String descricao
     String localEstadoCidade

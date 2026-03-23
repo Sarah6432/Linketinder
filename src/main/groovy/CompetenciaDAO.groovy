@@ -1,7 +1,11 @@
 import groovy.sql.Sql
 
 class CompetenciaDAO {
-    Sql db = Conexao.getConn()
+    private final Sql db
+
+    CompetenciaDAO(Sql sql) {
+        this.db = sql
+    }
 
     void salvar(String nomeComp) {
         try {
@@ -10,7 +14,7 @@ class CompetenciaDAO {
                 ON CONFLICT (nome) DO NOTHING
             """, [nomeComp])
         } catch (Exception e) {
-            println "Erro ao salvar competência: ${e.message}"
+            throw new RuntimeException("Erro ao salvar competência: ${e.message}", e)
         }
     }
 
@@ -21,18 +25,16 @@ class CompetenciaDAO {
                 SET nome = ? 
                 WHERE id = ?
             """, [novoNome, id])
-            println "Sucesso: Competência atualizada para '$novoNome'!"
         } catch (Exception e) {
-            println "Erro ao atualizar competência: ${e.message}"
+            throw new RuntimeException("Erro ao atualizar competência ID $id: ${e.message}", e)
         }
     }
 
     void deletar(int id) {
         try {
             db.execute("DELETE FROM competencias WHERE id = ?", [id])
-            println "Sucesso: Competência ID $id removida do banco!"
         } catch (Exception e) {
-            println "Erro ao deletar competência: ${e.message}"
+            throw new RuntimeException("Erro ao deletar competência ID $id: ${e.message}", e)
         }
     }
 
@@ -40,8 +42,7 @@ class CompetenciaDAO {
         try {
             return db.rows("SELECT * FROM competencias ORDER BY nome ASC")
         } catch (Exception e) {
-            println "Erro ao listar competências: ${it.message}"
-            return []
+            throw new RuntimeException("Erro ao listar competências: ${e.message}", e)
         }
     }
 }
