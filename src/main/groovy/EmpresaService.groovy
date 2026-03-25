@@ -41,11 +41,13 @@ class EmpresaService {
         if (v) {
             if (dados.nome) v.nome = dados.nome
             vagaWriter.atualizar(v)
+            println "Vaga Atualizada!"
         }
     }
 
     void excluirVaga(int id) {
         vagaWriter.deletar(id)
+        println "Vaga Excluida com Sucesso!"
     }
 
     void gerenciarInteresse(int empId, int candId, ICurtida cDAO) {
@@ -59,10 +61,12 @@ class EmpresaService {
     void atualizarPerfilCompleto(Empresa e, Map dados) {
         if (dados.nome) e.nome = dados.nome
         empWriter.atualizar(e)
+        println "Dados Atualizados com Sucesso!"
     }
 
     void excluirEmpresa(int id) {
         empWriter.deletar(id)
+        println "Dados Excluidos com Sucesso!"
     }
 
     void mostrarMatchesConfirmados(int empId) {

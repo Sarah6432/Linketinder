@@ -24,6 +24,7 @@ class CandidatoService {
         if (dados.sobrenome) c.sobrenome = dados.sobrenome
         if (dados.email) c.email = dados.email
         writer.atualizar(c)
+        println "Dados Atualizados com Sucesso!"
     }
 
     void listarCandidatos() {
@@ -32,6 +33,7 @@ class CandidatoService {
 
     void excluirCandidato(int id) {
         writer.deletar(id)
+        println "Dados Excluidos com Sucesso!"
     }
 
     List<Candidato> obterTodos() {
