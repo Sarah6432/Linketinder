@@ -40,8 +40,13 @@ class EmpresaService {
         Vaga v = vagaReader.listarTodos().find { it.id == vagaId }
         if (v) {
             if (dados.nome) v.nome = dados.nome
+            if (dados.descricao) v.descricao = dados.descricao
+            if (dados.local) v.localEstadoCidade = dados.local
+
             vagaWriter.atualizar(v)
-            println "Vaga Atualizada!"
+            println "Vaga ID $vagaId atualizada com sucesso!"
+        } else {
+            println "Vaga não encontrada."
         }
     }
 
@@ -60,8 +65,14 @@ class EmpresaService {
 
     void atualizarPerfilCompleto(Empresa e, Map dados) {
         if (dados.nome) e.nome = dados.nome
+        if (dados.email) e.email = dados.email
+        if (dados.cnpj) e.cnpj = dados.cnpj
+        if (dados.descricao) e.descricao = dados.descricao
+        if (dados.pais) e.pais = dados.pais
+        if (dados.cep) e.cep = dados.cep
+
         empWriter.atualizar(e)
-        println "Dados Atualizados com Sucesso!"
+        println "Perfil da empresa '${e.nome}' atualizado com sucesso!"
     }
 
     void excluirEmpresa(int id) {
