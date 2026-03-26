@@ -9,7 +9,7 @@ class Vaga {
     Vaga(String nome, String descricao, List<String> competencias, Empresa empresa) {
         this.nome = nome
         this.descricao = descricao
-        this.competencias = competencias
+        this.competencias = competencias ?: []
         this.empresa = empresa
     }
 
@@ -18,7 +18,7 @@ class Vaga {
         println "[$index] ID Banco: $id | Vaga: $nome"
         println "Empresa: ${empresa.nome} | Local: $localEstadoCidade"
         println "Descrição: $descricao"
-        if (requisitos) {
+        if (competencias) {
             println "Requisitos: ${competencias.join(', ')}"
         }
     }
