@@ -15,7 +15,7 @@ class Vaga {
 
     void exibirVaga(int index) {
         println "------------------------------------------"
-        println "[$index] ID Banco: $id | Vaga: $nome"
+        println " ID Banco: $id | Vaga: $nome"
         println "Empresa: ${empresa.nome} | Local: $localEstadoCidade"
         println "Descrição: $descricao"
         if (competencias) {

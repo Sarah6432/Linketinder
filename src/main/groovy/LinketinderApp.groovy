@@ -108,6 +108,7 @@ class LinketinderApp {
                 print "ID Vaga: "; int idV = Integer.parseInt(scanner.nextLine())
                 def dados = [:]
                 print "Novo Título: "; String nt = scanner.nextLine(); if(!nt.isEmpty()) dados.nome = nt
+                print "Nova Descrição: "; String nd = scanner.nextLine(); if(!nt.isEmpty()) dados.descricao = nd
                 service.atualizarVagaCompleta(idV, dados); break
             case 4:
                 print "ID Vaga para deletar: "; int idDel = Integer.parseInt(scanner.nextLine())

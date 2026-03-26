@@ -41,7 +41,6 @@ class EmpresaService {
         if (v) {
             if (dados.nome) v.nome = dados.nome
             if (dados.descricao) v.descricao = dados.descricao
-            if (dados.local) v.localEstadoCidade = dados.local
 
             vagaWriter.atualizar(v)
             println "Vaga ID $vagaId atualizada com sucesso!"
