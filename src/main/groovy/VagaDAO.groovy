@@ -65,12 +65,26 @@ class VagaDAO implements IReader<Vaga>, IWriter<Vaga>, ICompetenciaManager {
     }
 
     private Vaga mapRowToVaga(def row) {
+        def sqlComp = """
+        SELECT c.nome 
+        FROM vagas_competencias vc 
+        JOIN competencias c ON vc.competencia_id = c.id 
+        WHERE vc.vaga_id = ?
+    """
+        List<String> listaCompetencias = db.rows(sqlComp, [row.id]).collect { it.nome }
+
         Empresa emp = new Empresa(row.emp_nome ?: "", "", "", "", "", "")
         emp.id = row.empresa_id
 
-        Vaga v = new Vaga(row.nome_vaga ?: "", row.descricao ?: "", [], emp)
+        Vaga v = new Vaga(
+                row.nome_vaga ?: "",
+                row.descricao ?: "",
+                listaCompetencias,
+                emp
+        )
         v.id = row.id
         v.localEstadoCidade = row.local_estado_cidade ?: ""
+
         return v
     }
 }

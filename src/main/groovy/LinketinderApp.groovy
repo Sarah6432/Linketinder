@@ -114,34 +114,65 @@ class LinketinderApp {
                 service.excluirVaga(idDel); break
         }
     }
-
     private static void fluxoAreaCandidato(Scanner scanner, CandidatoDAO cDAO, VagaDAO vDAO) {
-        vDAO.listarTodos().each { println "ID: ${it.id} | Vaga: ${it.nome} | Empresa: ${it.empresa.nome}" }
-        print "Seu ID: "; int idC = Integer.parseInt(scanner.nextLine())
-        print "ID Vaga para Curtir: "; int idV = Integer.parseInt(scanner.nextLine())
-        cDAO.registrarCurtida(idC, idV)
+        try {
+            def vagas = vDAO.listarTodos()
+            if (vagas.isEmpty()) return
+
+            vagas.each { v ->
+                println "ID: ${v.id} | Vaga: ${v.nome}"
+                println "Requisitos: ${v.competencias?.join(', ') ?: 'Nenhum'}"
+            }
+
+            print "Seu ID: "; int idC = Integer.parseInt(scanner.nextLine())
+            print "ID Vaga: "; int idV = Integer.parseInt(scanner.nextLine())
+
+            cDAO.registrarCurtida(idC, idV)
+            println "Interesse registrado."
+        } catch (Exception e) {
+            println "Erro: ${e.message}"
+        }
     }
 
     private static void fluxoGerenciarMatches(Scanner scanner, EmpresaDAO eDAO, CandidatoDAO cDAO, EmpresaService eService) {
-        print "ID Empresa: "; int id = Integer.parseInt(scanner.nextLine())
-        println "1. Ver Interessados e Curtir | 2. Histórico de Matches"
-        int opt = Integer.parseInt(scanner.nextLine())
+        try {
+            print "ID da sua Empresa: "
+            int idEmp = Integer.parseInt(scanner.nextLine())
 
-        if (opt == 1) {
-            def interessados = eDAO.listarInteressados(id)
-            interessados.each { println "ID: ${it.cand_id} | Nome: ${it.cand_nome} | Vaga: ${it.vaga_nome}" }
-            print "ID Candidato: "; int idC = Integer.parseInt(scanner.nextLine())
-            if (idC != 0) {
-                eService.gerenciarInteresse(id, idC, cDAO)
-                def matches = eDAO.listarMatchesReais(id)
-                def candidato = cDAO.listarTodos().find{it.id == idC}
-                if (matches.any { it.candidato == candidato?.nome }) {
-                    println "Match Realizado!"
-                    candidato.exibirPerfil()
+            println "\n1. Ver Interessados e Curtir | 2. Histórico de Matches"
+            print "Escolha: "
+            int opt = Integer.parseInt(scanner.nextLine())
+
+            if (opt == 1) {
+                def interessados = eDAO.listarInteressados(idEmp)
+                if (interessados.isEmpty()) {
+                    println "Nenhum interessado no momento."
+                    return
                 }
+                println "\nCandidatos interessados: "
+                interessados.each { row ->
+                    def candCompleto = cDAO.listarTodos().find { it.id == row.cand_id }
+                    println "ID: ${row.cand_id} | Vaga: ${row.vaga_nome}"
+                    println "Skills do Candidato: ${candCompleto?.competencias?.join(', ') ?: 'Nenhuma registrada'}"
+                }
+                print "\nID do Candidato para retribuir curtida (0 para sair): "
+                int idCand = Integer.parseInt(scanner.nextLine())
+
+                if (idCand != 0) {
+                    eService.gerenciarInteresse(idEmp, idCand, cDAO)
+                    def matches = eDAO.listarMatchesReais(idEmp)
+                    def candidatoAlvo = cDAO.listarTodos().find { it.id == idCand }
+
+                    if (matches.any { it.candidato == candidatoAlvo?.nome }) {
+                        println "MATCH REALIZADO!"
+                        candidatoAlvo.exibirPerfil()
+                    }
+                }
+            } else if (opt == 2) {
+                eService.mostrarMatchesConfirmados(idEmp)
             }
-        } else {
-            eService.mostrarMatchesConfirmados(id)
+        } catch (Exception e) {
+            println "Erro no fluxo de matches: ${e.message}"
         }
     }
 

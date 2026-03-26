@@ -3,13 +3,13 @@ class Vaga {
     String nome
     String descricao
     String localEstadoCidade
-    List<String> requisitos = []
+    List<String> competencias = []
     Empresa empresa
 
-    Vaga(String nome, String descricao, List<String> requisitos, Empresa empresa) {
+    Vaga(String nome, String descricao, List<String> competencias, Empresa empresa) {
         this.nome = nome
         this.descricao = descricao
-        this.requisitos = requisitos
+        this.competencias = competencias
         this.empresa = empresa
     }
 
@@ -19,7 +19,7 @@ class Vaga {
         println "Empresa: ${empresa.nome} | Local: $localEstadoCidade"
         println "Descrição: $descricao"
         if (requisitos) {
-            println "Requisitos: ${requisitos.join(', ')}"
+            println "Requisitos: ${competencias.join(', ')}"
         }
     }
 }
