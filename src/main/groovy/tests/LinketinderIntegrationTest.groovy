@@ -1,6 +1,15 @@
+package tests
+
+import config.Conexao
+import model.CandidatoDAO
+import model.EmpresaDAO
+import model.VagaDAO
 import org.junit.Test
 import org.junit.BeforeClass
 import org.junit.AfterClass
+import service.CandidatoService
+import service.EmpresaService
+
 import static org.junit.Assert.*
 import groovy.sql.Sql
 
@@ -52,7 +61,7 @@ class LinketinderIntegrationTest {
         assertNotNull(emp)
         idsEmpresas.add(emp.id)
 
-        empresaService.anunciarVaga(emp.id, "Dev Java", "Desc Vaga", "Remoto", ["Java", "SQL"])
+        empresaService.anunciarVaga(emp.id, "Dev Java", "Desc model.Vaga", "Remoto", ["Java", "SQL"])
 
         def todasVagas = vagaDAO.listarTodos()
         def vagaExistente = todasVagas.any { it.nome == "Dev Java" && it.empresa.id == emp.id }

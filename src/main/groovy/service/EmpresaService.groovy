@@ -1,3 +1,14 @@
+package service
+
+import model.Empresa
+import model.EmpresaDAO
+import model.ICompetenciaManager
+import model.ICurtida
+import model.IReader
+import model.IWriter
+import model.Vaga
+import model.VagaDAO
+
 class EmpresaService {
     private final IReader<Empresa> empReader
     private final IWriter<Empresa> empWriter
@@ -15,25 +26,43 @@ class EmpresaService {
         this.vagaComp = vDAO
     }
 
-    void registrarEmpresa(String nome, String email, String cnpj, String cep, String pais, String desc, String senha) {
-        Empresa e = new Empresa(nome, email, cep, pais, desc, cnpj)
-        e.senha = senha
+    void registrarEmpresa(Map d) {
+        Empresa e = new Empresa(
+                d.nome ?: "",
+                d.email ?: "",
+                d.pais ?: "",
+                d.cep ?: "",
+                d.desc ?: ""
+        )
+        e.cnpj = d.cnpj ?: ""
+        e.senha = d.senha ?: ""
+
         empWriter.salvar(e)
-        println "Empresa cadastrada!"
     }
 
     void anunciarVaga(int empresaId, String titulo, String desc, String local, List<String> reqs) {
-        Empresa emp = new Empresa("", "", "", "", "", "")
+        Empresa emp = new Empresa()
         emp.id = empresaId
+
         Vaga v = new Vaga(titulo, desc, reqs, emp)
+
         v.localEstadoCidade = local
-        int idVaga = ((VagaDAO)vagaWriter).salvar(v, empresaId)
-        reqs.each { vagaComp.vincular(idVaga, it) }
-        println "Vaga anunciada!"
+
+        int idVaga = vagaWriter.salvar(v)
+
+        if (idVaga > 0) {
+            reqs.each { vagaComp.vincular(idVaga, it) }
+            println "Vaga anunciada com sucesso!"
+        }
     }
 
-    void listarVagasPorEmpresa(int empresaId) {
-        vagaReader.listarTodos().findAll { it.empresa.id == empresaId }.each { it.exibirVaga(0) }
+    List<Vaga> listarVagasPorEmpresa(int empresaId) {
+        def todasAsVagas = vagaReader.listarTodos() ?: []
+        return todasAsVagas.findAll { it != null && it.empresa != null && it.empresa.id == empresaId }
+    }
+
+    Vaga buscarVagaPorId(int id) {
+        return vagaReader.listarTodos().find { it.id == id }
     }
 
     void atualizarVagaCompleta(int vagaId, Map dados) {
@@ -41,6 +70,7 @@ class EmpresaService {
         if (v) {
             if (dados.nome) v.nome = dados.nome
             if (dados.descricao) v.descricao = dados.descricao
+            if (dados.local) v.localEstadoCidade = dados.local
 
             vagaWriter.atualizar(v)
             println "Vaga ID $vagaId atualizada com sucesso!"
@@ -48,13 +78,17 @@ class EmpresaService {
             println "Vaga não encontrada."
         }
     }
+    boolean vagaPertenceAEmpresa(int vagaId, int empresaId) {
+        def vaga = buscarVagaPorId(vagaId)
+        return vaga != null && vaga.empresa?.id == empresaId
+    }
 
     void excluirVaga(int id) {
         vagaWriter.deletar(id)
-        println "Vaga Excluida com Sucesso!"
+        println "Vaga Excluída com Sucesso!"
     }
 
-    void gerenciarInteresse(int empId, int candId, ICurtida cDAO) {
+    void gerenciarInteresse(int empId, int candId) {
         empCurtida.registrarCurtida(empId, candId)
     }
 
@@ -76,10 +110,12 @@ class EmpresaService {
 
     void excluirEmpresa(int id) {
         empWriter.deletar(id)
-        println "Dados Excluidos com Sucesso!"
+        println "Dados Excluídos com Sucesso!"
     }
 
     void mostrarMatchesConfirmados(int empId) {
-        ((EmpresaDAO)empReader).listarMatchesReais(empId).each { println "MATCH: ${it.candidato} - ${it.vaga}" }
+        ((EmpresaDAO)empReader).listarMatchesReais(empId).each {
+            println "MATCH: Candidato ID ${it.candidatoId} - Vaga ID ${it.vagaId}"
+        }
     }
 }

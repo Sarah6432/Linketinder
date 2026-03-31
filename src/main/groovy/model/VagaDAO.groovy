@@ -1,3 +1,5 @@
+package model
+
 import groovy.sql.Sql
 
 class VagaDAO implements IReader<Vaga>, IWriter<Vaga>, ICompetenciaManager {
@@ -62,6 +64,18 @@ class VagaDAO implements IReader<Vaga>, IWriter<Vaga>, ICompetenciaManager {
             ON CONFLICT DO NOTHING
         """
         db.execute(sqlVinculo, [vagaId, nomeSkill])
+    }
+
+    @Override
+    void desvincular(int vagaId, String nomeSkill) {
+        try {
+            db.execute("""
+            DELETE FROM vaga_competencias 
+            WHERE vaga_id = ? AND competencia_id = (SELECT id FROM competencias WHERE nome = ?)
+        """, [vagaId, nomeSkill])
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao desvincular competência da vaga: ${e.message}")
+        }
     }
 
     private Vaga mapRowToVaga(def row) {

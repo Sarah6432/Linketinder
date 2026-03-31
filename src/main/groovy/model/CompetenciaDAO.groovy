@@ -1,3 +1,5 @@
+package model
+
 import groovy.sql.Sql
 
 class CompetenciaDAO {

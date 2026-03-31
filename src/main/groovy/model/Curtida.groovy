@@ -1,3 +1,4 @@
+package model
 
 class Curtida {
     Candidato candidato
@@ -17,7 +18,7 @@ class Curtida {
         if (isMatch()) {
             println "[$index] MATCH! Nome: ${candidato.nome} | Email: ${candidato.email} | Skills: ${candidato.competencias.join(', ')}"
         } else {
-            println "[$index] [Candidato Anônimo] | Skills: ${candidato.competencias.join(', ')}"
+            println "[$index] [model.Candidato Anônimo] | Skills: ${candidato.competencias.join(', ')}"
         }
     }
 }

@@ -76,10 +76,10 @@ Principais Correções Realizadas - SOLID
 1. Separação de Responsabilidades (SRP)
 Antes: A lógica de negócio (como decidir quais campos atualizar ou formatar strings) estava misturada com a interface no LinketinderApp ou diretamente no SQL do DAO.
 
-Depois: Criamos a camada de Service (CandidatoService, EmpresaService). Agora, o App apenas lê dados do teclado e o DAO apenas executa SQL. Toda a "inteligência" do sistema fica protegida nos Services.
+Depois: Criamos a camada de Service (service.CandidatoService, service.EmpresaService). Agora, o App apenas lê dados do teclado e o DAO apenas executa SQL. Toda a "inteligência" do sistema fica protegida nos Services.
 
 2. Estabilidade de Tipos e Construtores (LSP)
-Antes: As classes Candidato e Empresa tinham construtores confusos e redundantes. Ao mudar a hierarquia para uma EntidadeBase, corrigimos erros de "missing constructor" que quebravam o sistema.
+Antes: As classes model.Candidato e model.Empresa tinham construtores confusos e redundantes. Ao mudar a hierarquia para uma model.EntidadeBase, corrigimos erros de "missing constructor" que quebravam o sistema.
 
 Depois: O uso de Herança correta permitiu que o sistema tratasse candidatos e empresas como "Pessoas", facilitando a exibição de perfis e garantindo que o construtor usado no DAO fosse o mesmo definido na classe.
 
@@ -91,7 +91,7 @@ Depois: Mapeamos cada insert, update e select para bater exatamente com o seu es
 4. Segregação de Interfaces (ISP)
 Antes: Os Services dependiam das classes concretas dos DAOs. Se o DAO mudasse, o Service quebrava.
 
-Depois: Criamos interfaces pequenas (IReader, IWriter, ICurtida, ICompetenciaManager). Agora, o CompetenciaService não sabe o que é um CandidatoDAO; ele só sabe que recebeu algo que "sabe vincular competências".
+Depois: Criamos interfaces pequenas (model.IReader, model.IWriter, model.ICurtida, model.ICompetenciaManager). Agora, o service.CompetenciaService não sabe o que é um model.CandidatoDAO; ele só sabe que recebeu algo que "sabe vincular competências".
 ///////////////////////////////////
 
 🏃 Como Executar
@@ -103,13 +103,13 @@ Crie um banco de dados chamado linketinder.
 Execute os scripts SQL presentes na pasta /sql (ou crie as tabelas conforme as definições de classe).
 
 2. Executando o Backend (Console)
-Configure suas credenciais na classe Conexao.groovy.
+Configure suas credenciais na classe config.Conexao.groovy.
 
 Execute via Gradle:
 
 Bash
 ./gradlew run
-Utilize o menu interativo para navegar entre as áreas de Candidato, Empresa e Gerenciamento.
+Utilize o menu interativo para navegar entre as áreas de model.Candidato, model.Empresa e Gerenciamento.
 
 3. Testando o Frontend (Web)
 Navegue até frontend_oficial.

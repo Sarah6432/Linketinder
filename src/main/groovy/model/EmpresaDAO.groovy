@@ -1,3 +1,6 @@
+package model
+
+import groovy.sql.GroovyRowResult
 import groovy.sql.Sql
 
 class EmpresaDAO implements IReader<Empresa>, IWriter<Empresa>, ICurtida {
@@ -71,6 +74,15 @@ class EmpresaDAO implements IReader<Empresa>, IWriter<Empresa>, ICurtida {
             WHERE v.empresa_id = ? AND ce.empresa_id = ?
         """
         return db.rows(sql, [empresaId, empresaId])
+    }
+
+    Empresa buscarPorEmail(String email){
+        try{
+            GroovyRowResult row = db.firstRow("SELECT * FROM empresas WHERE email_corporativo = ?", [email])
+            return row ? mapRowToEmpresa(row) : null
+        }catch (Exception e){
+            throw new RuntimeException("Erro ao buscar email da empresa: ${e.message}")
+        }
     }
 
     private Empresa mapRowToEmpresa(def row) {

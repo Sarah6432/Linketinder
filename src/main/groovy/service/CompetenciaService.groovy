@@ -1,3 +1,8 @@
+package service
+
+import model.CompetenciaDAO
+import model.ICompetenciaManager
+
 class CompetenciaService {
     private final CompetenciaDAO competenciaDAO
     private final ICompetenciaManager compManager

@@ -1,3 +1,9 @@
+package tests
+
+import model.Candidato
+import model.Curtida
+import model.Empresa
+import model.Vaga
 import org.junit.Test
 import org.junit.Before
 import static org.junit.Assert.*
@@ -53,7 +59,7 @@ class LinketinderTest {
     void shouldNotBeMatchBeforeEmpresaInterest() {
         def candidato = new Candidato("João Silva", "joao@email.com", "Brasil", "01000", "Dev", "123", 25, ["Python"])
         def empresa = new Empresa("Tech", "rh@tech.com", "SP", "01000", "TI", "456", "Brasil", ["Python"])
-        def vaga = new Vaga("Vaga Python", "Desc", ["Python"], empresa)
+        def vaga = new Vaga("model.Vaga Python", "Desc", ["Python"], empresa)
         def curtida = new Curtida(candidato, vaga)
 
         assertFalse("Não deve ser match até que a empresa registre interesse no candidato", curtida.isMatch())

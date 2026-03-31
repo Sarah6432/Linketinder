@@ -1,3 +1,5 @@
+package model
+
 class Vaga {
     int id
     String nome
@@ -15,8 +17,8 @@ class Vaga {
 
     void exibirVaga(int index) {
         println "------------------------------------------"
-        println " ID Banco: $id | Vaga: $nome"
-        println "Empresa: ${empresa.nome} | Local: $localEstadoCidade"
+        println " ID Banco: $id | model.Vaga: $nome"
+        println "model.Empresa: ${empresa.nome} | Local: $localEstadoCidade"
         println "Descrição: $descricao"
         if (competencias) {
             println "Requisitos: ${competencias.join(', ')}"
