@@ -53,15 +53,38 @@ class EmpresaDAO implements IReader<Empresa>, IWriter<Empresa>, ICurtida {
         db.execute("INSERT INTO curtidas_empresa (empresa_id, candidato_id) VALUES (?, ?) ON CONFLICT DO NOTHING", [empresaId, candidatoId])
     }
 
-    List<Map> listarInteressados(int empresaId) {
+    List<Map> listarCandidatosInteressados(int empresaId) {
         def sql = """
-            SELECT c.id as cand_id, c.nome as cand_nome, v.nome_vaga as vaga_nome
-            FROM curtidas_candidato cc
-            JOIN candidatos c ON cc.candidato_id = c.id
-            JOIN vagas v ON cc.vaga_id = v.id
-            WHERE v.empresa_id = ?
-        """
-        return db.rows(sql, [empresaId])
+        SELECT 
+            c.id AS id, 
+            c.nome AS nome, 
+            v.nome_vaga AS nome_vaga,
+            (SELECT STRING_AGG(comp.nome, ', ') 
+             FROM candidato_competencias cc_comp 
+             JOIN competencias comp ON cc_comp.competencia_id = comp.id 
+             WHERE cc_comp.candidato_id = c.id) AS competencias
+        FROM curtidas_candidato cc
+        JOIN candidatos c ON cc.candidato_id = c.id
+        JOIN vagas v ON cc.vaga_id = v.id
+        WHERE v.empresa_id = ?
+    """
+        return db.rows(sql, [empresaId]) ?: []
+    }
+
+    List<Map> buscarMatchesPorEmpresa(int empresaId) {
+        def sql = """
+        SELECT 
+            c.id AS candidatoId, 
+            c.nome AS nomeCandidato, 
+            c.email AS emailCandidato,
+            v.nome_vaga AS nomeVaga
+        FROM curtidas_candidato cc
+        JOIN vagas v ON cc.vaga_id = v.id
+        JOIN curtidas_empresa ce ON ce.candidato_id = cc.candidato_id
+        JOIN candidatos c ON c.id = cc.candidato_id
+        WHERE v.empresa_id = ? AND ce.empresa_id = ?
+    """
+        return db.rows(sql, [empresaId, empresaId]) ?: []
     }
 
     List<Map> listarMatchesReais(int empresaId) {

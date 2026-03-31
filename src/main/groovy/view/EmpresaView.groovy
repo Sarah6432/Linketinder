@@ -107,4 +107,8 @@ class EmpresaView {
         println ">> [SISTEMA]: $msg"
     }
 
+    String lerEntrada(String mensagem) {
+        print mensagem
+        return scanner.nextLine()
+    }
 }

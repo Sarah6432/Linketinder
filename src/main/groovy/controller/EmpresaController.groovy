@@ -71,7 +71,32 @@ class EmpresaController {
                     break
 
                 case 7:
-                    view.mostrarMensagem("Funcionalidade de Matches em desenvolvimento...")
+                    println "\n--- Gestão de Matches ---"
+                    println "1. Ver Candidatos que curtiram minhas vagas e Retribuir (Like)"
+                    println "2. Visualizar Matches Confirmados (Interesse Mútuo)"
+
+                    String sub = view.lerEntrada("Escolha: ").trim()
+
+                    if (sub == "1") {
+                        def interessados = service.listarCandidatosQueCurtiuEmpresa(empresaLogada.id)
+                        if (interessados.isEmpty()) {
+                            println "Ninguém curtiu suas vagas ainda."
+                        } else {
+                            interessados.each { c ->
+                                println "------------------------------------------"
+                                println "ID: ${c.id} | Candidato: ${c.nome}"
+                                println "Vaga de interesse: ${c.nome_vaga}"
+                                println "Competências: ${c.competencias ?: 'Não informadas'}"
+                            }
+                            int idCand = view.pedirId("demonstrar interesse")
+                            service.gerenciarInteresse(empresaLogada.id, idCand)
+                        }
+                    } else if (sub == "2") {
+                        service.listarMatchesDaEmpresa(empresaLogada.id)
+                    }
+                    else {
+                        println "Opção inválida."
+                    }
                     break
 
                 case 8:

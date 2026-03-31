@@ -90,6 +90,34 @@ class EmpresaService {
 
     void gerenciarInteresse(int empId, int candId) {
         empCurtida.registrarCurtida(empId, candId)
+
+        def matches = empReader.buscarMatchesPorEmpresa(empId) ?: []
+        boolean deuMatch = matches.any { it.candidatoId == candId }
+
+        if (deuMatch) {
+            println "Match! O candidato também demonstrou interesse em suas vagas."
+        } else {
+            println "Interesse registrado. Aguardando retribuição do candidato."
+        }
+    }
+    List listarCandidatosQueCurtiuEmpresa(int empId) {
+        return ((EmpresaDAO) empReader).listarCandidatosInteressados(empId) ?: []
+    }
+    void listarMatchesDaEmpresa(int empId) {
+        def matches = empReader.buscarMatchesPorEmpresa(empId) ?: []
+
+        if (matches.isEmpty()) {
+            println "\nNenhum match encontrado até o momento."
+        } else {
+            println "\nSeus Matches: "
+            matches.each { m ->
+                println "------------------------------------------"
+                println "Candidato: ${m.nomeCandidato}"
+                println "E-mail: ${m.emailCandidato}"
+                println "Vaga Relacionada: ${m.nomeVaga}"
+                println "------------------------------------------"
+            }
+        }
     }
 
     List<Empresa> obterTodas() {
