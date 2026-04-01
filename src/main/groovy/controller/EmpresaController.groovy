@@ -51,12 +51,13 @@ class EmpresaController {
                 case 5:
                     int idVaga = view.pedirId("editar")
                     def vaga = service.buscarVagaPorId(idVaga)
-                    if (vaga && vaga.empresa?.id == empresaLogada.id) {
-                        Map edit = view.coletarEdicaoVaga(vaga)
-                        service.atualizarVagaCompleta(idVaga, edit)
-                        view.mostrarMensagem("Vaga atualizada!")
+
+                    if (vaga) {
+                        Map dadosEditados = view.coletarEdicaoVaga(vaga)
+                        service.atualizarVagaCompleta(idVaga, dadosEditados)
+                        view.mostrarMensagem("Vaga e requisitos atualizados com sucesso!")
                     } else {
-                        view.mostrarMensagem("Vaga não encontrada ou acesso negado.")
+                        view.mostrarMensagem("Vaga não encontrada.")
                     }
                     break
 
@@ -71,31 +72,38 @@ class EmpresaController {
                     break
 
                 case 7:
-                    println "\n--- Gestão de Matches ---"
+                    println "\nGestao de Matches:"
                     println "1. Ver Candidatos que curtiram minhas vagas e Retribuir (Like)"
-                    println "2. Visualizar Matches Confirmados (Interesse Mútuo)"
+                    println "2. Visualizar Matches Confirmados (Interesse Mutuo)"
 
                     String sub = view.lerEntrada("Escolha: ").trim()
 
                     if (sub == "1") {
-                        def interessados = service.listarCandidatosQueCurtiuEmpresa(empresaLogada.id)
+                        List interessados = service.listarCandidatosQueCurtiuEmpresa(empresaLogada.id)
+
                         if (interessados.isEmpty()) {
-                            println "Ninguém curtiu suas vagas ainda."
+                            println "Ninguem curtiu suas vagas ainda."
                         } else {
                             interessados.each { c ->
                                 println "------------------------------------------"
-                                println "ID: ${c.id} | Candidato: ${c.nome}"
+                                println "ID: ${c.id}"
                                 println "Vaga de interesse: ${c.nome_vaga}"
-                                println "Competências: ${c.competencias ?: 'Não informadas'}"
+                                println "Competencias: ${c.competencias ?: 'Nao informadas'}"
                             }
+
+                            println "\nDigite o ID do candidato para dar like ou [0] para cancelar:"
                             int idCand = view.pedirId("demonstrar interesse")
-                            service.gerenciarInteresse(empresaLogada.id, idCand)
+
+                            if (idCand == 0) {
+                                println "Acao cancelada pelo usuario."
+                            } else {
+                                service.gerenciarInteresse(empresaLogada.id, idCand)
+                            }
                         }
                     } else if (sub == "2") {
                         service.listarMatchesDaEmpresa(empresaLogada.id)
-                    }
-                    else {
-                        println "Opção inválida."
+                    } else {
+                        println "Opcao invalida."
                     }
                     break
 

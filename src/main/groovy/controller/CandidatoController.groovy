@@ -26,7 +26,7 @@ class CandidatoController {
                         break
 
                     case 2:
-                        Map novosDados = view.coletarDadosParaAtualização(candidatoLogado)
+                        Map novosDados = view.coletarDadosParaAtualizacao(candidatoLogado)
                         if (novosDados) {
                             service.atualizarPerfilCompleto(candidatoLogado, novosDados)
                             view.mostrarMensagem("Perfil atualizado com sucesso!")

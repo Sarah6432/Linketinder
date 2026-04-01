@@ -71,29 +71,18 @@ class CandidatoDAO implements IReader<Candidato>, IWriter<Candidato>, ICurtida, 
         }
     }
 
-    @Override
-    void vincular(int candidatoId, String nomeSkill) {
-        try {
-            db.execute("INSERT INTO competencias (nome) VALUES (?) ON CONFLICT (nome) DO NOTHING", [nomeSkill])
-            db.execute("""
-                INSERT INTO candidato_competencias (candidato_id, competencia_id) 
-                SELECT ?, id FROM competencias WHERE nome = ? 
-                ON CONFLICT DO NOTHING
-            """, [candidatoId, nomeSkill])
-        } catch (Exception e) {
-            throw new RuntimeException("Erro ao vincular competência: ${e.message}")
-        }
-    }
+    void atualizarCompetencias(int candidatoId, List<String> nomesCompetencias) {
+        nomesCompetencias.each { nome ->
+            def row = db.firstRow("SELECT id FROM competencias WHERE LOWER(nome) = LOWER(?)", [nome.trim()])
+            int compId
 
-    @Override
-    void desvincular(int candidatoId, String nomeSkill) {
-        try {
-            db.execute("""
-                DELETE FROM candidato_competencias 
-                WHERE candidato_id = ? AND competencia_id = (SELECT id FROM competencias WHERE nome = ?)
-            """, [candidatoId, nomeSkill])
-        } catch (Exception e) {
-            throw new RuntimeException("Erro ao desvincular competência: ${e.message}")
+            if (!row) {
+                def keys = db.executeInsert("INSERT INTO competencias (nome) VALUES (?)", [nome.trim()])
+                compId = keys[0][0]
+            } else {
+                compId = row.id
+            }
+            db.execute("INSERT INTO candidato_competencias (candidato_id, competencia_id) VALUES (?, ?)", [candidatoId, compId])
         }
     }
 
@@ -104,6 +93,19 @@ class CandidatoDAO implements IReader<Candidato>, IWriter<Candidato>, ICurtida, 
         } catch (Exception e) {
             throw new RuntimeException("Erro ao buscar email: ${e.message}")
         }
+    }
+
+    Map buscarPerfilCompleto(int candidatoId) {
+        def sql = """
+        SELECT c.*, 
+               (SELECT STRING_AGG(comp.nome, ', ') 
+                FROM candidato_competencias cc_comp 
+                JOIN competencias comp ON cc_comp.competencia_id = comp.id 
+                WHERE cc_comp.candidato_id = c.id) AS lista_competencias
+        FROM candidatos c 
+        WHERE c.id = ?
+    """
+        return db.firstRow(sql, [candidatoId])
     }
 
     private Candidato mapRowToCandidato(def row) {

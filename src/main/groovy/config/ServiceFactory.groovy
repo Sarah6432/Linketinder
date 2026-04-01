@@ -8,6 +8,7 @@ import model.VagaDAO
 import service.CandidatoService
 import service.CompetenciaService
 import service.EmpresaService
+import view.EmpresaView
 
 class ServiceFactory {
 
@@ -20,12 +21,9 @@ class ServiceFactory {
     static EmpresaService createEmpresaService(Sql sql) {
         EmpresaDAO eDAO = new EmpresaDAO(sql)
         VagaDAO vDAO = new VagaDAO(sql)
-        return new EmpresaService(eDAO, vDAO)
-    }
-
-    static CompetenciaService createCompetenciaService(Sql sql) {
-        CompetenciaDAO compDAO = new CompetenciaDAO(sql)
         CandidatoDAO cDAO = new CandidatoDAO(sql)
-        return new CompetenciaService(compDAO, cDAO)
+        EmpresaView eView = new EmpresaView()
+
+        return new EmpresaService(eDAO, vDAO, cDAO, eView)
     }
 }

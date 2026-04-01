@@ -1,6 +1,7 @@
 package service
 
 import model.Candidato
+import model.CandidatoDAO
 import model.ICompetenciaManager
 import model.IReader
 import model.IWriter
@@ -43,16 +44,24 @@ class CandidatoService {
         return id
     }
 
-    Candidato atualizarPerfilCompleto(Candidato c, Map dados) {
-        if (dados.nome) c.nome = dados.nome
-        if (dados.sobrenome) c.sobrenome = dados.sobrenome
-        if (dados.email) c.email = dados.email
-        if (dados.descricao) c.descricao = dados.descricao
+    void atualizarPerfilCompleto(Candidato c, Map dados) {
+        c.nome = dados.nome
+        c.sobrenome = dados.sobrenome
+        c.email = dados.email
+        c.descricao = dados.descricao
 
         writer.atualizar(c)
-        return c
-    }
 
+        if (dados.competencias != null) {
+            List<String> novasSkills = dados.competencias.split(',')
+                    .collect { it.trim() }
+                    .findAll { !it.isEmpty() }
+                    .unique()
+
+            ((CandidatoDAO) writer).atualizarCompetencias(c.id, novasSkills)
+            c.competencias = novasSkills
+        }
+    }
     List<Vaga> listarVagasDisponiveis() {
         return vagaReader.listarTodos()
     }

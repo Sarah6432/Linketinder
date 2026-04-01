@@ -2,7 +2,6 @@ package view
 
 import model.Empresa
 import model.Vaga
-import model.VagaDAO
 
 class EmpresaView {
     private Scanner scanner = new Scanner(System.in)
@@ -45,26 +44,33 @@ class EmpresaView {
         }
     }
 
-    Map coletarEdicaoVaga(Vaga vaga){
-       println "Editar vaga (id: ${vaga.id})"
-       println "(Deixe vazio para manter o valor atual)"
-       println "Novo Título (${vaga.nome})"
-       String t = scanner.nextLine()
-       println "Nova descrição (${vaga.descricao}): "
-       String d = scanner.nextLine()
+    Map coletarEdicaoVaga(Vaga vaga) {
+        println "\nEditando Vaga: ${vaga.nome}"
+        println "Deixe em branco para manter o valor atual"
 
-       return [
-               titulo: t.isEmpty() ? vaga.nome : t,
-               descricao: d.isEmpty() ? vaga.descricao : d,
-       ]
-   }
+        print "Novo Título [${vaga.nome}]: "
+        String nome = scanner.nextLine()
+
+        print "Nova Descrição [${vaga.descricao}]: "
+        String descricao = scanner.nextLine()
+
+        println "Requisitos atuais: ${vaga.competencias?.join(', ') ?: 'Nenhum'}"
+        print "Novos Requisitos (separe por vírgula): "
+        String requisitosRaw = scanner.nextLine()
+
+        return [
+                nome: nome.isEmpty() ? vaga.nome : nome,
+                descricao: descricao.isEmpty() ? vaga.descricao : descricao,
+                requisitos: requisitosRaw.isEmpty() ? vaga.competencias?.join(',') : requisitosRaw
+        ]
+    }
 
     void exibirDadosEmpresa(Empresa emp){
       println "Dados da Empresa: "
       println "Nome: ${emp.nome}"
       println "CNPJ: ${emp.cnpj}"
-      println "CNPJ: ${emp.email}"
-      println "CNPJ: ${emp.cep}"
+      println "E-mail: ${emp.email}"
+      println "Cep: ${emp.cep}"
       println "Descrição: ${emp.descricao}"
     }
 
@@ -94,8 +100,21 @@ class EmpresaView {
         return resposta == "S"
     }
 
+    void exibirPerfilDetalhado(Map c) {
+        if (!c) {
+            println "candidato nao encontrado."
+            return
+        }
+        println "\nperfil do candidato:"
+        println "nome: ${c.nome} ${c.sobrenome ?: ''}"
+        println "email: ${c.email}"
+        println "cep: ${c.cep ?: 'nao informado'}"
+        println "competencias: ${c.lista_competencias ?: 'nenhuma registrada'}"
+        println "---------------------------\n"
+    }
+
     int pedirId(String acao) {
-        print "Digite o ID da vaga para $acao: "
+        print "Digite o ID para $acao: "
         try {
             return Integer.parseInt(scanner.nextLine())
         } catch (Exception e) {
@@ -104,7 +123,7 @@ class EmpresaView {
     }
 
     void mostrarMensagem(String msg) {
-        println ">> [SISTEMA]: $msg"
+        println "- [SISTEMA]: $msg"
     }
 
     String lerEntrada(String mensagem) {

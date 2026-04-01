@@ -55,27 +55,26 @@ class VagaDAO implements IReader<Vaga>, IWriter<Vaga>, ICompetenciaManager {
         }
     }
 
-    @Override
-    void vincular(int vagaId, String nomeSkill) {
-        db.execute("INSERT INTO competencias (nome) VALUES (?) ON CONFLICT (nome) DO NOTHING", [nomeSkill])
-        def sqlVinculo = """
+    void limparCompetenciasVaga(int vagaId) {
+        db.execute("DELETE FROM vagas_competencias WHERE vaga_id = ?", [vagaId])
+    }
+
+    void vincularCompetenciaVaga(int vagaId, String nomeSkill) {
+        try {
+            db.execute("INSERT INTO competencias (nome) VALUES (?) ON CONFLICT (nome) DO NOTHING", [nomeSkill])
+
+            db.execute("""
             INSERT INTO vagas_competencias (vaga_id, competencia_id) 
             SELECT ?, id FROM competencias WHERE nome = ? 
             ON CONFLICT DO NOTHING
-        """
-        db.execute(sqlVinculo, [vagaId, nomeSkill])
-    }
-
-    @Override
-    void desvincular(int vagaId, String nomeSkill) {
-        try {
-            db.execute("""
-            DELETE FROM vaga_competencias 
-            WHERE vaga_id = ? AND competencia_id = (SELECT id FROM competencias WHERE nome = ?)
         """, [vagaId, nomeSkill])
         } catch (Exception e) {
-            throw new RuntimeException("Erro ao desvincular competência da vaga: ${e.message}")
+            throw new RuntimeException("Erro ao vincular requisito: ${e.message}")
         }
+    }
+
+    void atualizarBasico(int id, String nome, String descricao) {
+        db.execute("UPDATE vagas SET nome_vaga = ?, descricao = ? WHERE id = ?", [nome, descricao, id])
     }
 
     private Vaga mapRowToVaga(def row) {

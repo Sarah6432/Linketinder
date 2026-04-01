@@ -1,5 +1,6 @@
 package service
 
+import model.CandidatoDAO
 import model.Empresa
 import model.EmpresaDAO
 import model.ICompetenciaManager
@@ -8,6 +9,7 @@ import model.IReader
 import model.IWriter
 import model.Vaga
 import model.VagaDAO
+import view.EmpresaView
 
 class EmpresaService {
     private final IReader<Empresa> empReader
@@ -16,36 +18,40 @@ class EmpresaService {
     private final IReader<Vaga> vagaReader
     private final IWriter<Vaga> vagaWriter
     private final ICompetenciaManager vagaComp
+    private final CandidatoDAO candReader
+    private final EmpresaView view
 
-    EmpresaService(EmpresaDAO eDAO, VagaDAO vDAO) {
+    EmpresaService(EmpresaDAO eDAO, VagaDAO vDAO, CandidatoDAO cDAO, EmpresaView view) {
         this.empReader = eDAO
         this.empWriter = eDAO
         this.empCurtida = eDAO
         this.vagaReader = vDAO
         this.vagaWriter = vDAO
         this.vagaComp = vDAO
+        this.candReader = cDAO
+        this.view = view
     }
 
     void registrarEmpresa(Map d) {
         Empresa e = new Empresa(
-                d.nome ?: "",
-                d.email ?: "",
-                d.pais ?: "",
-                d.cep ?: "",
-                d.desc ?: ""
+                (d.nome ?: "").toString(),
+                (d.email ?: "").toString(),
+                (d.pais ?: "").toString(),
+                (d.cep ?: "").toString(),
+                (d.desc ?: "").toString(),
+                (d.cnpj ?: "").toString()
         )
-        e.cnpj = d.cnpj ?: ""
-        e.senha = d.senha ?: ""
+        e.senha = (d.senha ?: "").toString()
 
         empWriter.salvar(e)
     }
+
 
     void anunciarVaga(int empresaId, String titulo, String desc, String local, List<String> reqs) {
         Empresa emp = new Empresa()
         emp.id = empresaId
 
         Vaga v = new Vaga(titulo, desc, reqs, emp)
-
         v.localEstadoCidade = local
 
         int idVaga = vagaWriter.salvar(v)
@@ -66,18 +72,22 @@ class EmpresaService {
     }
 
     void atualizarVagaCompleta(int vagaId, Map dados) {
-        Vaga v = vagaReader.listarTodos().find { it.id == vagaId }
-        if (v) {
-            if (dados.nome) v.nome = dados.nome
-            if (dados.descricao) v.descricao = dados.descricao
-            if (dados.local) v.localEstadoCidade = dados.local
+        def dao = (model.VagaDAO) vagaWriter
+        dao.atualizarBasico(vagaId, dados.nome, dados.descricao)
 
-            vagaWriter.atualizar(v)
-            println "Vaga ID $vagaId atualizada com sucesso!"
-        } else {
-            println "Vaga não encontrada."
+        if (dados.requisitos != null) {
+            List<String> novosRequisitos = dados.requisitos.split(',')
+                    .collect { it.trim() }
+                    .findAll { !it.isEmpty() }
+                    .unique()
+
+            dao.limparCompetenciasVaga(vagaId)
+            novosRequisitos.each { req ->
+                dao.vincularCompetenciaVaga(vagaId, req)
+            }
         }
     }
+
     boolean vagaPertenceAEmpresa(int vagaId, int empresaId) {
         def vaga = buscarVagaPorId(vagaId)
         return vaga != null && vaga.empresa?.id == empresaId
@@ -85,29 +95,36 @@ class EmpresaService {
 
     void excluirVaga(int id) {
         vagaWriter.deletar(id)
-        println "Vaga Excluída com Sucesso!"
+        println "Vaga Excluida com Sucesso!"
     }
 
     void gerenciarInteresse(int empId, int candId) {
         empCurtida.registrarCurtida(empId, candId)
 
-        def matches = empReader.buscarMatchesPorEmpresa(empId) ?: []
+        def daoEmpresa = (model.EmpresaDAO) empReader
+        def matches = daoEmpresa.buscarMatchesPorEmpresa(empId) ?: []
+
         boolean deuMatch = matches.any { it.candidatoId == candId }
 
         if (deuMatch) {
-            println "Match! O candidato também demonstrou interesse em suas vagas."
+            println "\nmatch confirmado!"
+            def perfil = candReader.buscarPerfilCompleto(candId)
+            view.exibirPerfilDetalhado(perfil)
         } else {
-            println "Interesse registrado. Aguardando retribuição do candidato."
+            println "\ninteresse registrado. aguardando retribuicao do candidato."
         }
     }
+
     List listarCandidatosQueCurtiuEmpresa(int empId) {
         return ((EmpresaDAO) empReader).listarCandidatosInteressados(empId) ?: []
     }
+
     void listarMatchesDaEmpresa(int empId) {
-        def matches = empReader.buscarMatchesPorEmpresa(empId) ?: []
+        def daoEmpresa = (model.EmpresaDAO) empReader
+        def matches = daoEmpresa.buscarMatchesPorEmpresa(empId) ?: []
 
         if (matches.isEmpty()) {
-            println "\nNenhum match encontrado até o momento."
+            println "\nNenhum match encontrado ate o momento."
         } else {
             println "\nSeus Matches: "
             matches.each { m ->
@@ -138,12 +155,6 @@ class EmpresaService {
 
     void excluirEmpresa(int id) {
         empWriter.deletar(id)
-        println "Dados Excluídos com Sucesso!"
-    }
-
-    void mostrarMatchesConfirmados(int empId) {
-        ((EmpresaDAO)empReader).listarMatchesReais(empId).each {
-            println "MATCH: Candidato ID ${it.candidatoId} - Vaga ID ${it.vagaId}"
-        }
+        println "Dados Excluidos com Sucesso!"
     }
 }

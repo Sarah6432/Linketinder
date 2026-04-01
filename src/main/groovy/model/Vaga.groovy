@@ -14,14 +14,4 @@ class Vaga {
         this.competencias = competencias ?: []
         this.empresa = empresa
     }
-
-    void exibirVaga(int index) {
-        println "------------------------------------------"
-        println " ID Banco: $id | model.Vaga: $nome"
-        println "model.Empresa: ${empresa.nome} | Local: $localEstadoCidade"
-        println "Descrição: $descricao"
-        if (competencias) {
-            println "Requisitos: ${competencias.join(', ')}"
-        }
-    }
 }

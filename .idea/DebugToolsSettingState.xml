@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DebugToolsSettingState">
+    <option name="agentPath" value="$USER_HOME$/.debugTools/lib/debug-tools-agent-4.6.0.jar" />
+    <option name="agentVersion" value="4.6.0" />
+  </component>
+</project>

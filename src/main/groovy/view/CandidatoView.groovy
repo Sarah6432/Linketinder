@@ -32,33 +32,37 @@ class CandidatoView {
     }
 
 
-    Map coletarDadosParaAtualização(Candidato candidato){
-        println "Editar perfil: "
-        println "Para manter o valor atual deixe em branco"
-        Map novosDados = [:]
+    Map coletarDadosParaAtualizacao(Candidato candidato) {
+        println "\nEditar Perfil:"
+        println "Para manter o valor atual, apenas aperte ENTER"
 
         try {
-            println "Novo nome (${candidato.nome}): "
-            String n = scanner.nextLine()
-            if(!n.isEmpty()) novosDados.nome = n
+            print "Novo nome (${candidato.nome}): "
+            String nomeInput = scanner.nextLine()
 
-            println "Novo sobrenome (${candidato.sobrenome}): "
-            String s = scanner.nextLine()
-            if(!s.isEmpty()) novosDados.sobrenome = s
+            print "Novo sobrenome (${candidato.sobrenome}): "
+            String sobrenomeInput = scanner.nextLine()
 
-            println "Novo Email (${candidato.email}): "
-            String e = scanner.nextLine()
-            if(!e.isEmpty()) novosDados.sobrenome = e
+            print "Novo Email (${candidato.email}): "
+            String emailInput = scanner.nextLine()
 
-            println "Nova Bio (${candidato.descricao}): "
-            String d = scanner.nextLine()
-            if(!d.isEmpty()) novosDados.sobrenome = d
+            print "Nova Bio (${candidato.descricao}): "
+            String descricaoInput = scanner.nextLine()
 
-            return novosDados
-        } catch (Exception e){
-            throw new Exception("Erro ao receber dados para atualizar: ${e.message}")
+            println "Competências atuais: ${candidato.competencias?.join(', ') ?: 'Nenhuma'}"
+            print "Novas competências (separe por vírgula): "
+            String skillsRaw = scanner.nextLine()
+
+            return [
+                    nome: nomeInput.isEmpty() ? candidato.nome : nomeInput,
+                    sobrenome: sobrenomeInput.isEmpty() ? candidato.sobrenome : sobrenomeInput,
+                    email: emailInput.isEmpty() ? candidato.email : emailInput,
+                    descricao: descricaoInput.isEmpty() ? candidato.descricao : descricaoInput,
+                    competencias: skillsRaw.isEmpty() ? candidato.competencias?.join(',') : skillsRaw
+            ]
+        } catch (Exception e) {
+            throw new Exception("Erro ao coletar dados: ${e.message}")
         }
-
     }
 
     boolean confirmarExclusao(){
@@ -100,6 +104,7 @@ class CandidatoView {
         print "Digite o nome exato da competência que deseja remover: "
         return scanner.nextLine().trim()
     }
+
 
     void mostrarMensagem(String msg) {
         println "- [SISTEMA]: $msg"
