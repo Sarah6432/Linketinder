@@ -121,6 +121,27 @@ Utilizado de forma sutil através das interfaces de persistência. O EmpresaServ
 
 Vantagem: Permite trocar o meio de salvamento sem alterar uma linha de código na camada de serviço.
 
+MVC - 
+Principais Correções Técnicas
+Injeção de Dependências: Refatoração dos construtores dos Services para receberem DAOs e Views externamente. Isso eliminou a criação de instâncias internas, facilitando testes e manutenção.
+
+Padronização de Assinaturas: Alinhamento de métodos entre Controller, Service e DAO para utilizarem objetos Map e String puras, evitando erros de tipagem e de parâmetros faltantes.
+
+Consistência de Dados: Ajuste no fluxo de persistência para garantir que entidades como Empresa e Candidato sejam criadas com todos os campos obrigatórios antes de chegarem ao banco.
+
+Melhoria de UX no CLI: Implementação de controles de fluxo e tratamento de exceções para evitar que erros de input derrubem a aplicação.
+
+Evolução da Arquitetura MVC
+A refatoração aplicou a Separação de Responsabilidades de forma rigorosa:
+
+Model (Dados): Os DAOs tornaram-se especialistas. Agora possuem métodos atômicos, que escondem toda a complexidade do SQL das outras camadas.
+
+View (Interface): A interface foi limpa de lógica. Criamos métodos de exibição genéricos que apenas formatam dados recebidos, permitindo reutilizar a mesma "ficha de perfil" em diferentes partes do sistema.
+
+Controller/Service (Lógica): O Service passou a concentrar a inteligência de negócio, enquanto o Controller atua apenas como o orquestrador entre a entrada do usuário e o processamento.
+
+Resultado: O código tornou-se escalável, reutilizável e testável.
+
 🏃 Como Executar
 1. Configuração do Banco de Dados
 Certifique-se de ter o PostgreSQL instalado.
