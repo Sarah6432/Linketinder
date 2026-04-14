@@ -25,15 +25,16 @@ class LoginController {
 
         if (credenciais.valido) {
             String email = credenciais.email
+            String senhaDigitada = credenciais.senha
 
             Candidato cand = candidatoDAO.buscarPorEmail(email)
-            if (cand) {
+            if (cand && cand.senha == senhaDigitada) {
                 view.mostrarSucesso("Candidato ${cand.nome} logado!")
                 return cand
             }
 
             Empresa emp = empresaDAO.buscarPorEmail(email)
-            if (emp) {
+            if (emp && emp.senha == senhaDigitada) {
                 view.mostrarSucesso("Empresa ${emp.nome} logada!")
                 return emp
             }

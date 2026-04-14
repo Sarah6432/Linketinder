@@ -56,14 +56,14 @@ class LinketinderApp {
                         Object usuarioLogado = loginController.realizarLogin()
 
                         if (usuarioLogado == null) {
-                            println ">> Login não realizado ou credenciais incorretas."
+                            println "Login não realizado ou credenciais incorretas."
                         } else if (usuarioLogado instanceof Candidato) {
                             candController.gerenciarPerfil(usuarioLogado)
                         } else if (usuarioLogado instanceof Empresa) {
                             empController.gerenciarPainel(usuarioLogado)
                         }
                     } catch (Exception e) {
-                        println ">> Erro detectado no fluxo de login:"
+                        println "Erro detectado no fluxo de login:"
                         e.printStackTrace()
                     }
                     break
