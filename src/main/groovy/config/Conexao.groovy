@@ -23,11 +23,4 @@ class Conexao {
         return instance
     }
 
-    static void fecharConexao() {
-        if (instance != null) {
-            instance.close()
-            instance = null
-            println "Conexão encerrada!"
-        }
-    }
 }
