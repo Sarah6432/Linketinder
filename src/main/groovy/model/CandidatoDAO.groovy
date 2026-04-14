@@ -82,7 +82,7 @@ class CandidatoDAO implements IReader<Candidato>, IWriter<Candidato>, ICurtida, 
             } else {
                 compId = row.id
             }
-            db.execute("INSERT INTO candidato_competencias (candidato_id, competencia_id) VALUES (?, ?)", [candidatoId, compId])
+            db.execute("""INSERT INTO candidato_competencias (candidato_id, competencia_id) VALUES (?, ?) ON CONFLICT DO NOTHING""", [candidatoId, compId])
         }
     }
 
