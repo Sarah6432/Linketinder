@@ -23,12 +23,12 @@ class CadastroController {
                 int id = candService.registrarNovoCandidato(dados)
 
                 if (id > 0) {
-                    println "\n>> [SUCESSO]: Candidato cadastrado! ID: $id"
+                    println "\n[SUCESSO]: Candidato cadastrado! ID: $id"
                 } else {
-                    println "\n>> [ERRO]: O banco de dados recusou o registro."
+                    println "\n[ERRO]: O banco de dados recusou o registro."
                 }
             } catch (Exception e) {
-                println "\n>> [FALHA]: ${e.message}"
+                println "\n[FALHA]: ${e.message}"
             }
         }
     }
@@ -39,9 +39,9 @@ class CadastroController {
         if (d && d.valido) {
             try {
                 empService.registrarEmpresa(d)
-                println "\n>> [SUCESSO]: Empresa cadastrada!"
+                println "\n[SUCESSO]: Empresa cadastrada!"
             } catch (Exception e) {
-                println "\n>> [ERRO]: ${e.message}"
+                println "\n[ERRO]: ${e.message}"
             }
         }
     }
