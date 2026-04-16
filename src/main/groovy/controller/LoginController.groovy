@@ -1,46 +1,31 @@
 package controller
 
+import DAO.CandidatoDAO
+import DAO.EmpresaDAO
 import groovy.sql.Sql
 import model.Candidato
 import model.Empresa
-import model.CandidatoDAO
-import model.EmpresaDAO
-import view.LoginView
+import org.postgresql.shaded.com.ongres.scram.common.bouncycastle.pbkdf2.Pack
 
-class LoginController {
-    private Sql sql
-    private LoginView view
+class LoginController{
     private CandidatoDAO candidatoDAO
     private EmpresaDAO empresaDAO
 
-    LoginController(Sql sql, LoginView view) {
-        this.sql = sql
-        this.view = view
+    LoginController(Sql sql){
         this.candidatoDAO = new CandidatoDAO(sql)
         this.empresaDAO = new EmpresaDAO(sql)
     }
 
-    Object realizarLogin() {
-        Map credenciais = view.coletarCredenciais()
+    Object autenticar(String email, String senha){
+         try {
+             Candidato candidato = candidatoDAO.buscarPorEmail(email)
+             if (candidato && candidato.senha == senha) return candidato
 
-        if (credenciais.valido) {
-            String email = credenciais.email
-            String senhaDigitada = credenciais.senha
+             Empresa empresa = empresaDAO.buscarPorEmail(email)
+             if (empresa && empresa.senha == senha) return empresa
+         }catch (Exception e){
+           e.printStackTrace()
+         }
 
-            Candidato cand = candidatoDAO.buscarPorEmail(email)
-            if (cand && cand.senha == senhaDigitada) {
-                view.mostrarSucesso("Candidato ${cand.nome} logado!")
-                return cand
-            }
-
-            Empresa emp = empresaDAO.buscarPorEmail(email)
-            if (emp && emp.senha == senhaDigitada) {
-                view.mostrarSucesso("Empresa ${emp.nome} logada!")
-                return emp
-            }
-
-            view.mostrarErro("E-mail ou senha inválidos.")
-        }
-        return null
     }
 }

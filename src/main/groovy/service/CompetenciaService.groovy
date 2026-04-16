@@ -1,6 +1,6 @@
 package service
 
-import model.CompetenciaDAO
+import DAO.CompetenciaDAO
 import model.ICompetenciaManager
 
 class CompetenciaService {

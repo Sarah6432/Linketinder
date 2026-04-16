@@ -91,7 +91,7 @@ Depois: Mapeamos cada insert, update e select para bater exatamente com o seu es
 4. Segregação de Interfaces (ISP)
 Antes: Os Services dependiam das classes concretas dos DAOs. Se o DAO mudasse, o Service quebrava.
 
-Depois: Criamos interfaces pequenas (model.IReader, model.IWriter, model.ICurtida, model.ICompetenciaManager). Agora, o service.CompetenciaService não sabe o que é um model.CandidatoDAO; ele só sabe que recebeu algo que "sabe vincular competências".
+Depois: Criamos interfaces pequenas (model.IReader, model.IWriter, model.ICurtida, model.ICompetenciaManager). Agora, o service.CompetenciaService não sabe o que é um DAO.CandidatoDAO; ele só sabe que recebeu algo que "sabe vincular competências".
 ///////////////////////////////////
 🏗️ Design Patterns Utilizados
 Além da arquitetura base, o projeto aplica padrões que facilitam a manutenção e a escalabilidade do sistema:

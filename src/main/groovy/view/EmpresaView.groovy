@@ -1,116 +1,208 @@
 package view
 
+import model.Candidato
 import model.Empresa
 import model.Vaga
+import controller.EmpresaController
 
 class EmpresaView {
     private Scanner scanner = new Scanner(System.in)
+    private EmpresaController controller
 
-    int exibirMenuEmpresa(String nomeEmpresa){
-        try {
-            println "Painel da Empresa - $nomeEmpresa"
-            println "1. Ver Perfil da Empresa"
-            println "2. Editar Perfil da Empresa"
-            println "3. Anunciar Nova Vaga"
-            println "4. Listar Minhas Vagas"
-            println "5. Editar Vaga Existente"
-            println "6. Excluir Vaga"
-            println "7. Ver Candidatos Interessados / Matches"
-            println "8. Encerrar conta da Empresa"
-            println "0. Sair / Logout"
-            println "Escolha uma opção: "
+    EmpresaView(EmpresaController controller) {
+        this.controller = controller
+    }
 
-            return Integer.parseInt(scanner.nextLine())
-        }catch (Exception e) {
-           throw new Exception("Erro receber escolha do menu da empresa: ${e.message}")
+    void gerenciarPainel(Empresa empresaLogada) {
+        boolean emSessao = true
+
+        while (emSessao) {
+            try {
+                int opcao = exibirMenuEmpresa(empresaLogada.nome)
+
+                switch (opcao) {
+                    case 1:
+                        exibirDadosAtuais(empresaLogada)
+                        break
+
+                    case 2:
+                        Map novosDados = coletarEdicaoPerfil(empresaLogada)
+                        controller.atualizarPerfil(empresaLogada, novosDados)
+                        mostrarMensagem("Perfil da empresa atualizado com sucesso!")
+                        break
+
+                    case 3:
+                        Map dadosVaga = coletarDadosNovaVaga()
+                        if (dadosVaga.valido) {
+                            List<String> requisitos = (List<String>) dadosVaga.requisitosRaw.split(',').collect { it.trim() }
+                            controller.anunciarVaga(empresaLogada.id, (String) dadosVaga.titulo, (String) dadosVaga.descricao, (String) dadosVaga.local, requisitos)
+                            mostrarMensagem("Vaga anunciada com sucesso!")
+                        }
+                        break
+
+                    case 4:
+                        List<Vaga> vagas = controller.listarVagasPorEmpresa(empresaLogada.id)
+                        if (vagas.isEmpty()) {
+                            mostrarMensagem("Sua empresa ainda não possui vagas cadastradas.")
+                        } else {
+                            vagas.each { Vaga v -> println "ID: ${v.id} | Título: ${v.nome} | Local: ${v.localEstadoCidade}" }
+                        }
+                        break
+
+                    case 5:
+                        int idVaga = pedirId("editar")
+                        Vaga vaga = (Vaga) controller.buscarVagaPorId(idVaga)
+                        if (vaga) {
+                            Map dadosEditados = coletarEdicaoVaga(vaga)
+                            controller.atualizarVaga(idVaga, dadosEditados)
+                            mostrarMensagem("Vaga atualizada com sucesso!")
+                        } else {
+                            mostrarMensagem("Vaga não encontrada.")
+                        }
+                        break
+
+                    case 6:
+                        int idExcluir = pedirId("excluir")
+                        if (controller.verificarPropriedadeVaga(idExcluir, empresaLogada.id)) {
+                            controller.excluirVaga(idExcluir)
+                            mostrarMensagem("Vaga excluída com sucesso!")
+                        } else {
+                            mostrarMensagem("Erro: Vaga não encontrada ou sem permissão.")
+                        }
+                        break
+
+                    case 7:
+                        fluxoMatches(empresaLogada.id)
+                        break
+
+                    case 8:
+                        if (confirmarExclusaoEmpresa()) {
+                            controller.excluirContaEmpresa(empresaLogada.id)
+                            mostrarMensagem("Empresa removida do sistema.")
+                            emSessao = false
+                        }
+                        break
+
+                    case 0:
+                        emSessao = false
+                        break
+
+                    default:
+                        mostrarMensagem("Opção inválida.")
+                        break
+                }
+            } catch (Exception e) {
+               e.printStackTrace()
+            }
         }
     }
 
-    Map coletarDadosNovaVaga(){
-        println "Anunciar nova vaga: "
-        try{
-            println "Titulo da Vaga: "
-            String t = scanner.nextLine()
-            println "Descrição: "
-            String d = scanner.nextLine()
-            println "Local (Cidade/Estado): "
-            String l = scanner.nextLine()
-            println "Competências necessárias (separe por vírgula): "
-            String r = scanner.nextLine()
+    private void fluxoMatches(int empresaId) {
+        println "\nGestao de Matches:"
+        println "1. Ver Candidatos que curtiram minhas vagas"
+        println "2. Visualizar Matches Confirmados"
+        String sub = lerEntrada("Escolha: ").trim()
 
-            return [titulo: t, descricao: d, local: l, requisitosRaw: r, valido: true]
-        }catch(Exception e){
-            throw new Exception("Erro ao anunciar vaga: ${e.message}")
+        if (sub == "1") {
+            List<Map> interessados = controller.listarInteressados(empresaId)
+
+            if (interessados.isEmpty()) {
+                println "Ninguém curtiu suas vagas ainda."
+            } else {
+                println "\nCandidatos Interessados: "
+                interessados.each { Map c ->
+                    println "ID: ${c.id} | Vaga: ${c.nome_vaga}"
+                    println "Skills do candidato: ${c.competencias ?: 'Nao informadas'}"
+                }
+
+                int idCand = pedirId("dar like (0 para cancelar)")
+
+                if (idCand > 0) {
+                    Map dadosMatch = controller.gerenciarInteresse(empresaId, idCand)
+
+                    if (dadosMatch) {
+                        println "\nMATCH CONFIRMADO!"
+                        println "Nome: ${dadosMatch.nome} ${dadosMatch.sobrenome ?: ''}"
+                        println "E-mail: ${dadosMatch.email}"
+                        println "CPF: ${dadosMatch.cpf}"
+                        println "Bio: ${dadosMatch.bio ?: 'Nao informada'}"
+                    } else {
+                        println "\nInteresse registrado. Aguardando retribuicao do candidato."
+                    }
+                }
+            }
+        } else if (sub == "2") {
+            exibirMatches(empresaId)
         }
+    }
+
+    void exibirMatches(int empresaId) {
+        List<Candidato> matches = controller.obterMatchesCompletos(empresaId) ?: []
+
+        if (matches.isEmpty()) {
+            println "\nNenhum match confirmado ate o momento."
+        } else {
+            println "\nMATCHES CONFIRMADOS:"
+            matches.each { Candidato c ->
+                println "--------------------------"
+                c.exibirPerfil()
+                println "E-mail de contato: ${c.email}"
+                println "--------------------------"
+            }
+        }
+    }
+
+    int exibirMenuEmpresa(String nomeEmpresa) {
+        println "\nPainel da Empresa - $nomeEmpresa"
+        println "1. Ver Perfil | 2. Editar Perfil | 3. Anunciar Vaga"
+        println "4. Listar Vagas | 5. Editar Vaga | 6. Excluir Vaga"
+        println "7. Matches | 8. Encerrar Conta | 0. Sair"
+        print "Escolha: "
+        try {
+            return Integer.parseInt(scanner.nextLine())
+        } catch (Exception e) {
+            e.printStackTrace()
+            return -1
+        }
+    }
+
+    Map coletarDadosNovaVaga() {
+        println "Anunciar nova vaga: "
+        print "Titulo: "; String t = scanner.nextLine()
+        print "Descrição: "; String d = scanner.nextLine()
+        print "Local: "; String l = scanner.nextLine()
+        print "Requisitos (vítgula): "; String r = scanner.nextLine()
+        return [titulo: t, descricao: d, local: l, requisitosRaw: r, valido: true]
     }
 
     Map coletarEdicaoVaga(Vaga vaga) {
-        println "\nEditando Vaga: ${vaga.nome}"
-        println "Deixe em branco para manter o valor atual"
-
-        print "Novo Título [${vaga.nome}]: "
-        String nome = scanner.nextLine()
-
-        print "Nova Descrição [${vaga.descricao}]: "
-        String descricao = scanner.nextLine()
-
-        println "Requisitos atuais: ${vaga.competencias?.join(', ') ?: 'Nenhum'}"
-        print "Novos Requisitos (separe por vírgula): "
-        String requisitosRaw = scanner.nextLine()
-
+        print "Novo Título [${vaga.nome}]: "; String nome = scanner.nextLine()
+        print "Nova Descrição [${vaga.descricao}]: "; String desc = scanner.nextLine()
+        print "Novos Requisitos: "; String req = scanner.nextLine()
         return [
                 nome: nome.isEmpty() ? vaga.nome : nome,
-                descricao: descricao.isEmpty() ? vaga.descricao : descricao,
-                requisitos: requisitosRaw.isEmpty() ? vaga.competencias?.join(',') : requisitosRaw
+                descricao: desc.isEmpty() ? vaga.descricao : desc,
+                requisitos: req.isEmpty() ? (String) vaga.competencias?.join(',') : req
         ]
     }
 
-    void exibirDadosEmpresa(Empresa emp){
-      println "Dados da Empresa: "
-      println "Nome: ${emp.nome}"
-      println "CNPJ: ${emp.cnpj}"
-      println "E-mail: ${emp.email}"
-      println "Cep: ${emp.cep}"
-      println "Descrição: ${emp.descricao}"
+    static void exibirDadosAtuais(Empresa emp) {
+        println "Empresa: ${emp.nome} | CNPJ: ${emp.cnpj} | Email: ${emp.email}"
     }
 
     Map coletarEdicaoPerfil(Empresa emp) {
-        println "Editar perfil corporativo: "
-        println "Novo Nome (${emp.nome}): "
-        String n = scanner.nextLine()
-        println "Novo Email (${emp.email}): "
-        String e = scanner.nextLine()
-        println "Nova Descrição (${emp.descricao}): "
-        String d = scanner.nextLine()
-
+        print "Novo Nome (${emp.nome}): "; String n = scanner.nextLine()
+        print "Novo Email (${emp.email}): "; String e = scanner.nextLine()
         return [
                 nome: n.isEmpty() ? emp.nome : n,
                 email: e.isEmpty() ? emp.email : e,
-                descricao: d.isEmpty() ? emp.descricao : d
+                descricao: emp.descricao
         ]
     }
 
-    boolean confirmarExclusaoEmpresa(){
-        println "Atenção! Está ação não pode ser desfeita..."
-        println "Ao excluir a empresa, todas as suas vagas"
-        println "e histórico de curtidas serão apagados."
+    boolean confirmarExclusaoEmpresa() {
         print "Tem certeza que deseja excluir a empresa? (S/N): "
-
-        String resposta = scanner.nextLine().trim().toUpperCase()
-        return resposta == "S"
-    }
-
-    void exibirPerfilDetalhado(Map c) {
-        if (!c) {
-            println "candidato nao encontrado."
-            return
-        }
-        println "\nperfil do candidato:"
-        println "nome: ${c.nome} ${c.sobrenome ?: ''}"
-        println "email: ${c.email}"
-        println "cep: ${c.cep ?: 'nao informado'}"
-        println "competencias: ${c.lista_competencias ?: 'nenhuma registrada'}"
-        println "---------------------------\n"
+        return scanner.nextLine().trim().equalsIgnoreCase("S")
     }
 
     int pedirId(String acao) {
@@ -118,11 +210,12 @@ class EmpresaView {
         try {
             return Integer.parseInt(scanner.nextLine())
         } catch (Exception e) {
+            e.printStackTrace()
             return -1
         }
     }
 
-    void mostrarMensagem(String msg) {
+    static void mostrarMensagem(String msg) {
         println "- [SISTEMA]: $msg"
     }
 

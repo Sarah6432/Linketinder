@@ -1,18 +1,17 @@
 package tests
 
 import config.Conexao
-import model.CandidatoDAO
-import model.EmpresaDAO
-import model.VagaDAO
+import DAO.CandidatoDAO
+import DAO.EmpresaDAO
+import DAO.VagaDAO
 import model.Empresa
 import model.Vaga
+import model.Candidato
 import org.junit.Test
 import org.junit.BeforeClass
 import org.junit.AfterClass
 import service.CandidatoService
 import service.EmpresaService
-import view.CandidatoView
-import view.EmpresaView
 import static org.junit.Assert.*
 import groovy.sql.Sql
 
@@ -33,18 +32,15 @@ class LinketinderIntegrationTest {
         empresaDAO = new EmpresaDAO(db)
         vagaDAO = new VagaDAO(db)
 
-        CandidatoView candView = new CandidatoView()
-        EmpresaView empView = new EmpresaView()
-
-        candidatoService = new CandidatoService(candidatoDAO, candidatoDAO, candidatoDAO, vagaDAO)
-        empresaService = new EmpresaService(empresaDAO, vagaDAO, candidatoDAO, empView)
+        candidatoService = new CandidatoService(candidatoDAO, vagaDAO)
+        empresaService = new EmpresaService(empresaDAO, vagaDAO, candidatoDAO)
     }
 
     @Test
     void shouldRegisterAndRetrieveCompany() {
         long ts = System.currentTimeMillis()
-        String cnpj = String.valueOf(ts).take(14).toString()
-        String email = "corp${ts}@test.com".toString()
+        String cnpj = String.valueOf(ts).take(14)
+        String email = "corp${ts}@test.com"
 
         Map dados = [
                 nome: "Test Corp",
@@ -62,42 +58,78 @@ class LinketinderIntegrationTest {
         Empresa emp = empresas.find { it.cnpj == cnpj }
 
         assertNotNull(emp)
-        idsEmpresas.add(emp.id)
-        assertEquals("Test Corp", emp.nome)
+        if (emp) idsEmpresas.add(emp.id)
+        assertEquals("Test Corp", emp?.nome)
     }
 
     @Test
     void shouldCreateVagaSuccessfully() {
         long ts = System.currentTimeMillis()
-        Map dados = [
-                nome: "Vaga Test",
-                email: "vaga${ts}@test.com".toString(),
-                cnpj: "999",
+        String cnpjVaga = "V" + String.valueOf(ts).take(13)
+
+        Map dadosEmpresa = [
+                nome: "Vaga Test Corp",
+                email: "vaga_emp${ts}@test.com",
+                cnpj: cnpjVaga,
                 senha: "1",
                 pais: "BR",
-                desc: "D",
-                cep: "1"
+                desc: "Teste de Vaga",
+                cep: "12345"
         ]
-        empresaService.registrarEmpresa(dados)
+
+        empresaService.registrarEmpresa(dadosEmpresa)
         List<Empresa> empresas = empresaService.obterTodas()
-        Empresa emp = empresas.find { it.nome == "Vaga Test" }
+        Empresa emp = empresas.find { it.cnpj == cnpjVaga }
+
+        assertNotNull(emp)
         idsEmpresas.add(emp.id)
 
-        empresaService.anunciarVaga(emp.id, "Backend Dev", "Java Dev", "Remote", [])
+        empresaService.anunciarVaga(emp.id, "Backend Dev Integration", "Java/Groovy Experience", "Remote", ["Java", "SQL"])
 
         List<Vaga> todasVagas = vagaDAO.listarTodos()
-        Vaga vaga = todasVagas.find { it.empresa?.id == emp.id && it.nome == "Backend Dev" }
+        Vaga vaga = todasVagas.find { it.empresa?.id == emp.id && it.nome == "Backend Dev Integration" }
 
-        assertNotNull("A vaga deveria existir para esta empresa", vaga)
+        assertNotNull(vaga)
+        assertFalse(vaga.competencias.isEmpty())
+    }
+
+    @Test
+    void shouldRegisterCandidatoSuccessfully() {
+        long ts = System.currentTimeMillis()
+        String cpf = String.valueOf(ts).take(11)
+
+        Map dadosCand = [
+                nome: "Jose",
+                sobrenome: "Silva",
+                email: "jose${ts}@test.com",
+                cpf: cpf,
+                data: "1990-01-01",
+                pais: "Brasil",
+                cep: "11111",
+                bio: "Bio teste",
+                senha: "123",
+                skills: ["Groovy", "JUnit"]
+        ]
+
+        int id = candidatoService.registrarNovoCandidato(dadosCand)
+        assertTrue(id > 0)
+        idsCandidatos.add(id)
+
+        List<Candidato> lista = candidatoDAO.listarTodos()
+        Candidato jose = lista.find { it.id == id }
+
+        assertNotNull(jose)
+        assertEquals("Jose", jose.nome)
+        assertTrue(jose.competencias.contains("Groovy"))
     }
 
     @Test
     void shouldVerifyMatchStructure() {
         try {
-            List<Map> matches = empresaDAO.buscarMatchesPorEmpresa(1)
+            List<Map> matches = empresaDAO.listarMatchesReais(0)
             assertNotNull(matches)
         } catch (Exception e) {
-            fail("Database query failed: " + e.message)
+            fail("Erro na query de matches: " + e.message)
         }
     }
 

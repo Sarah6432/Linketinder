@@ -1,19 +1,18 @@
-package main
-
-import groovy.sql.Sql
 import config.Conexao
 import config.ServiceFactory
+import controller.CadastroController
 import controller.CandidatoController
 import controller.EmpresaController
-import controller.CadastroController
 import controller.LoginController
+import groovy.sql.Sql
+import model.Candidato
+import model.Empresa
 import service.CandidatoService
 import service.EmpresaService
+import view.CadastroView
 import view.CandidatoView
 import view.EmpresaView
 import view.LoginView
-import model.Candidato
-import model.Empresa
 import java.util.Scanner
 
 class LinketinderApp {
@@ -24,72 +23,56 @@ class LinketinderApp {
         CandidatoService candService = ServiceFactory.createCandidatoService(sql)
         EmpresaService empService = ServiceFactory.createEmpresaService(sql)
 
-        CandidatoView candView = new CandidatoView()
-        EmpresaView empView = new EmpresaView()
-        LoginView loginView = new LoginView()
-
-        CandidatoController candController = new CandidatoController(candService, candView)
-        EmpresaController empController = new EmpresaController(empService, empView)
+        CandidatoController candController = new CandidatoController(candService)
+        EmpresaController empController = new EmpresaController(empService)
         CadastroController cadastroController = new CadastroController(candService, empService)
-        LoginController loginController = new LoginController(sql, loginView)
+        LoginController loginController = new LoginController(sql)
+
+        LoginView loginView = new LoginView(loginController)
+        CandidatoView candView = new CandidatoView(candController)
+        EmpresaView empView = new EmpresaView(empController)
+        CadastroView cadastroView = new CadastroView(cadastroController)
 
         boolean executando = true
 
         while (executando) {
-            println "\nLinketinder"
+            println "\nLinketinder: "
             println "1. Login"
-            println "2. Cadastro: Novo Candidato"
-            println "3. Cadastro: Nova Empresa"
-            println "0. Sair do Sistema"
-            print "Escolha uma opção: "
-
-            if (!scanner.hasNextLine()) {
-                executando = false
-                break
-            }
+            println "2. Cadastro (Candidato ou Empresa)"
+            println "0. Sair"
+            print "Escolha: "
 
             String opcao = scanner.nextLine().trim()
 
             switch (opcao) {
                 case "1":
-                    try {
-                        Object usuarioLogado = loginController.realizarLogin()
+                    Object logado = loginView.renderizarLogin()
 
-                        if (usuarioLogado == null) {
-                            println "Login não realizado ou credenciais incorretas."
-                        } else if (usuarioLogado instanceof Candidato) {
-                            candController.gerenciarPerfil(usuarioLogado)
-                        } else if (usuarioLogado instanceof Empresa) {
-                            empController.gerenciarPainel(usuarioLogado)
-                        }
-                    } catch (Exception e) {
-                        println "Erro detectado no fluxo de login:"
-                        e.printStackTrace()
+                    if (logado instanceof Candidato) {
+                        candView.gerenciarPerfil((Candidato) logado)
+                    } else if (logado instanceof Empresa) {
+                        empView.gerenciarPainel((Empresa) logado)
                     }
                     break
 
                 case "2":
-                    cadastroController.fluxoCadastroCandidato()
-                    break
-
-                case "3":
-                    cadastroController.fluxoCadastroEmpresa()
+                    cadastroView.exibirMenuCadastro()
                     break
 
                 case "0":
-                    println "Encerrando sistema... Até logo!"
+                    println "Encerrando sistema..."
                     executando = false
                     break
 
                 default:
                     if (!opcao.isEmpty()) {
-                        println "Opção inválida. Tente novamente."
+                        println "Opção inválida."
                     }
                     break
             }
         }
 
-        if (sql) {
+        if (sql != null) {
             sql.close()
         }
     }

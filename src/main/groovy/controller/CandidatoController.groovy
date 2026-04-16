@@ -2,88 +2,35 @@ package controller
 
 import model.Candidato
 import service.CandidatoService
-import view.CandidatoView
 
 class CandidatoController {
     private final CandidatoService service
-    private final CandidatoView view
 
-    CandidatoController(CandidatoService service, CandidatoView view) {
+    CandidatoController(CandidatoService service) {
         this.service = service
-        this.view = view
     }
 
-    void gerenciarPerfil(Candidato candidatoLogado) {
-        boolean emSessao = true
+    void atualizarPerfil(Candidato candidato, Map novosDados) {
+        service.atualizarPerfilCompleto(candidato, novosDados)
+    }
 
-        while (emSessao) {
-            try {
-                int opcao = view.exibirMenuPerfil(candidatoLogado.nome)
+    void excluirCandidato(int id) {
+        service.excluirCandidato(id)
+    }
 
-                switch (opcao) {
-                    case 1:
-                        view.exibirDadosAtuais(candidatoLogado)
-                        break
+    List buscarVagasDisponiveis() {
+        return service.listarVagasDisponiveis()
+    }
 
-                    case 2:
-                        Map novosDados = view.coletarDadosParaAtualizacao(candidatoLogado)
-                        if (novosDados) {
-                            service.atualizarPerfilCompleto(candidatoLogado, novosDados)
-                            view.mostrarMensagem("Perfil atualizado com sucesso!")
-                        }
-                        break
+    void curtirVaga(int candidatoId, int vagaId) {
+        service.curtirVaga(candidatoId, vagaId)
+    }
 
-                    case 3:
-                        if (view.confirmarExclusao()) {
-                            service.excluirCandidato(candidatoLogado.id)
-                            view.mostrarMensagem("Conta removida.")
-                            emSessao = false
-                        }
-                        break
+    void adicionarCompetencia(int id, String skill) {
+        service.adicionarCompetencia(id, skill)
+    }
 
-                    case 4:
-                        List vagas = service.listarVagasDisponiveis()
-                        view.exibirVagasParaCandidato(vagas)
-                        int idVaga = view.pedirIdVagaParaCurtir()
-                        if (idVaga > 0) {
-                            service.curtirVaga(candidatoLogado.id, idVaga)
-                            view.mostrarMensagem("Vaga curtida!")
-                        }
-                        break
-
-                    case 5:
-                        view.exibirMinhasCompetencias(candidatoLogado.competencias)
-                        String novaSkill = view.pedirNomeNovaCompetencia()
-                        if (!novaSkill.isEmpty()) {
-                            service.adicionarCompetencia(candidatoLogado.id, novaSkill)
-                            candidatoLogado.competencias.add(novaSkill)
-                            view.mostrarMensagem("Competência adicionada!")
-                        }
-                        break
-
-                    case 6:
-                        view.exibirMinhasCompetencias(candidatoLogado.competencias)
-                        String skillRemover = view.pedirNomeCompetenciaParaRemover()
-                        if (candidatoLogado.competencias.contains(skillRemover)) {
-                            service.removerCompetencia(candidatoLogado.id, skillRemover)
-                            candidatoLogado.competencias.remove(skillRemover)
-                            view.mostrarMensagem("Competência removida!")
-                        } else {
-                            view.mostrarMensagem("Competência não encontrada no seu perfil.")
-                        }
-                        break
-
-                    case 0:
-                        emSessao = false
-                        break
-
-                    default:
-                        view.mostrarMensagem("Opção inválida.")
-                        break
-                }
-            } catch (Exception e) {
-                view.mostrarMensagem("Erro: ${e.message}")
-            }
-        }
+    void removerCompetencia(int id, String skill) {
+        service.removerCompetencia(id, skill)
     }
 }

@@ -1,26 +1,35 @@
 package view
 
+import controller.LoginController
+
 class LoginView {
     private Scanner scanner = new Scanner(System.in)
+    private LoginController controller
 
-    Map coletarCredenciais(){
-        try{
-            println "Bem vindo ao Linketinder - Login do Sistema"
-            println "E-mail: "
+    LoginView(LoginController controller){
+        this.controller = controller
+    }
+
+    Object renderizarLogin(){
+        try {
+            println "Login - Linketinder: "
+            print "E-mail: "
             String email = scanner.nextLine()
-            println "Senha: "
+            print "Senha: "
             String senha = scanner.nextLine()
-            return [email: email, senha: senha, valido: true]
+
+            Object usuarioLogado = controller.autenticar(email, senha)
+
+            if (usuarioLogado) {
+                println "Sucesso: Bem-vindo! "
+                return usuarioLogado
+            } else {
+                println "Erro: Credenciais inválidas."
+                return null
+            }
         }catch (Exception e){
-            throw new Exception("Falha na leitura de email e senha: ${e.message}")
+            e.printStackTrace()
+            return null
         }
-    }
-
-    void mostrarSucesso(String mensagem) {
-        println "Sucesso: $mensagem"
-    }
-
-    void mostrarErro(String mensagem) {
-        println "Error: $mensagem"
     }
 }

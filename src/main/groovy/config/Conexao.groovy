@@ -8,19 +8,21 @@ class Conexao {
     static Sql getConn() {
         if (instance == null) {
             try {
-                instance = Sql.newInstance(
-                        "jdbc:postgresql://localhost:5432/linketinder",
-                        "postgres",
-                        "0472",
-                        "org.postgresql.Driver"
-                )
-                println "Conexão estabelecida com sucesso!"
+                String url = System.getenv("DB_URL") ?: "jdbc:postgresql://localhost:5432/linketinder"
+                String user = System.getenv("DB_USER") ?: "postgres"
+                String pass = System.getenv("DB_PASS")
+                String driver = "org.postgresql.Driver"
+
+                if (!pass) {
+                    throw new RuntimeException("A variavel de ambiente DB_PASS nao foi configurada.")
+                }
+
+                instance = Sql.newInstance(url, user, pass, driver)
+
             } catch (Exception e) {
-                println "Falha ao conectar com o banco: ${e.message}"
-                throw e
+                e.printStackTrace()
             }
         }
         return instance
     }
-
 }

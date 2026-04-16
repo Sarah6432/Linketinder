@@ -1,24 +1,23 @@
 package model
 
-class Empresa {
-    int id
-    String nome
-    String email
-    String pais
-    String cep
-    String descricao
+class Empresa extends EntidadeBase {
     String cnpj
-    String senha
+
+    Empresa() {
+        super()
+    }
 
     Empresa(String nome, String email, String pais, String cep, String descricao, String cnpj) {
-        this.nome = nome
-        this.email = email
-        this.pais = pais
-        this.cep = cep
-        this.descricao = descricao
+        super(nome, email, cep, pais, descricao)
         this.cnpj = cnpj
     }
 
-    Empresa() {}
-
+    @Override
+    void exibirPerfil() {
+        println "Perfil da Empresa:"
+        println "ID: $id | Nome: $nome"
+        println "CNPJ: $cnpj | Email: $email"
+        println "Local: $pais - CEP: $cep"
+        println "Descrição: $descricao"
+    }
 }

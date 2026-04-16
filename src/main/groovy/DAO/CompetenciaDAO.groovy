@@ -1,4 +1,4 @@
-package model
+package DAO
 
 import groovy.sql.Sql
 

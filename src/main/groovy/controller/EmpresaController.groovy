@@ -1,128 +1,57 @@
 package controller
 
+import model.Candidato
 import model.Empresa
 import service.EmpresaService
-import view.EmpresaView
 
 class EmpresaController {
     private final EmpresaService service
-    private final EmpresaView view
 
-    EmpresaController(EmpresaService service, EmpresaView view) {
+    EmpresaController(EmpresaService service) {
         this.service = service
-        this.view = view
     }
 
-    void gerenciarPainel(Empresa empresaLogada) {
-        boolean emSessao = true
+    void atualizarPerfil(Empresa empresa, Map dados) {
+        service.atualizarPerfilCompleto(empresa, dados)
+    }
 
-        while (emSessao) {
-            int opcao = view.exibirMenuEmpresa(empresaLogada.nome)
+    void anunciarVaga(int empresaId, String titulo, String descricao, String local, List requisitos) {
+        service.anunciarVaga(empresaId, titulo, descricao, local, requisitos)
+    }
 
-            switch (opcao) {
-                case 1:
-                    view.exibirDadosEmpresa(empresaLogada)
-                    break
+    List listarVagasPorEmpresa(int empresaId) {
+        return service.listarVagasPorEmpresa(empresaId) ?: []
+    }
 
-                case 2:
-                    Map novosDados = view.coletarEdicaoPerfil(empresaLogada)
-                    service.atualizarPerfilCompleto(empresaLogada, novosDados)
-                    view.mostrarMensagem("Perfil da empresa atualizado com sucesso!")
-                    break
+    Object buscarVagaPorId(int idVaga) {
+        return service.buscarVagaPorId(idVaga)
+    }
 
-                case 3:
-                    Map dadosVaga = view.coletarDadosNovaVaga()
-                    if (dadosVaga.valido) {
-                        List<String> requisitos = dadosVaga.requisitosRaw.split(',').collect { it.trim() }
-                        service.anunciarVaga(empresaLogada.id, dadosVaga.titulo, dadosVaga.descricao, dadosVaga.local, requisitos)
-                        view.mostrarMensagem("Vaga anunciada com sucesso!")
-                    }
-                    break
+    void atualizarVaga(int idVaga, Map dados) {
+        service.atualizarVagaCompleta(idVaga, dados)
+    }
 
-                case 4:
-                    def vagas = service.listarVagasPorEmpresa(empresaLogada.id) ?: []
-                    if (vagas == null || vagas.isEmpty()) {
-                        view.mostrarMensagem("Sua empresa ainda não possui vagas cadastradas.")
-                    } else {
-                        vagas.each { v -> println "ID: ${v.id} | Título: ${v.nome} | Local: ${v.localEstadoCidade}" }
-                    }
-                    break
+    boolean verificarPropriedadeVaga(int vagaId, int empresaId) {
+        return service.vagaPertenceAEmpresa(vagaId, empresaId)
+    }
 
-                case 5:
-                    int idVaga = view.pedirId("editar")
-                    def vaga = service.buscarVagaPorId(idVaga)
+    void excluirVaga(int idVaga) {
+        service.excluirVaga(idVaga)
+    }
 
-                    if (vaga) {
-                        Map dadosEditados = view.coletarEdicaoVaga(vaga)
-                        service.atualizarVagaCompleta(idVaga, dadosEditados)
-                        view.mostrarMensagem("Vaga e requisitos atualizados com sucesso!")
-                    } else {
-                        view.mostrarMensagem("Vaga não encontrada.")
-                    }
-                    break
+    List<Map> listarInteressados(int empresaId) {
+        return service.listarCandidatosQueCurtiuEmpresa(empresaId) ?: []
+    }
 
-                case 6:
-                    int idExcluir = view.pedirId("excluir")
-                    if (service.vagaPertenceAEmpresa(idExcluir, empresaLogada.id)) {
-                        service.excluirVaga(idExcluir)
-                        view.mostrarMensagem("Vaga excluída com sucesso!")
-                    } else {
-                        view.mostrarMensagem("Erro: Vaga não encontrada ou você não tem permissão.")
-                    }
-                    break
+    Map gerenciarInteresse(int empId, int candId) {
+        return service.gerenciarInteresse(empId, candId)
+    }
 
-                case 7:
-                    println "\nGestao de Matches:"
-                    println "1. Ver Candidatos que curtiram minhas vagas e Retribuir (Like)"
-                    println "2. Visualizar Matches Confirmados (Interesse Mutuo)"
+    List<Candidato> obterMatchesCompletos(int empresaId) {
+        return service.obterMatchesCompletos(empresaId) ?: []
+    }
 
-                    String sub = view.lerEntrada("Escolha: ").trim()
-
-                    if (sub == "1") {
-                        List interessados = service.listarCandidatosQueCurtiuEmpresa(empresaLogada.id)
-
-                        if (interessados.isEmpty()) {
-                            println "Ninguem curtiu suas vagas ainda."
-                        } else {
-                            interessados.each { c ->
-                                println "------------------------------------------"
-                                println "ID: ${c.id}"
-                                println "Vaga de interesse: ${c.nome_vaga}"
-                                println "Competencias: ${c.competencias ?: 'Nao informadas'}"
-                            }
-
-                            println "\nDigite o ID do candidato para dar like ou [0] para cancelar:"
-                            int idCand = view.pedirId("demonstrar interesse")
-
-                            if (idCand == 0) {
-                                println "Acao cancelada pelo usuario."
-                            } else {
-                                service.gerenciarInteresse(empresaLogada.id, idCand)
-                            }
-                        }
-                    } else if (sub == "2") {
-                        service.listarMatchesDaEmpresa(empresaLogada.id)
-                    } else {
-                        println "Opcao invalida."
-                    }
-                    break
-
-                case 8:
-                    if (view.confirmarExclusaoEmpresa()) {
-                        service.excluirEmpresa(empresaLogada.id)
-                        view.mostrarMensagem("Empresa e vagas removidas do sistema.")
-                        emSessao = false
-                    }
-                    break
-
-                case 0:
-                    emSessao = false
-                    break
-
-                default:
-                    view.mostrarMensagem("Opção inválida.")
-                    break
-            }
-        }
+    void excluirContaEmpresa(int empresaId) {
+        service.excluirEmpresa(empresaId)
     }
 }

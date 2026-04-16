@@ -1,29 +1,23 @@
 package config
 
+import DAO.CandidatoDAO
+import DAO.EmpresaDAO
+import DAO.VagaDAO
 import groovy.sql.Sql
-import model.CandidatoDAO
-import model.CompetenciaDAO
-import model.EmpresaDAO
-import model.VagaDAO
 import service.CandidatoService
-import service.CompetenciaService
 import service.EmpresaService
-import view.EmpresaView
 
 class ServiceFactory {
-
     static CandidatoService createCandidatoService(Sql sql) {
-        CandidatoDAO dao = new CandidatoDAO(sql)
-        VagaDAO vDao = new VagaDAO(sql)
-        return new CandidatoService(dao, dao, dao, vDao)
+        CandidatoDAO candidatoDAO = new CandidatoDAO(sql)
+        VagaDAO vagaDAO = new VagaDAO(sql)
+        return new CandidatoService(candidatoDAO, vagaDAO)
     }
 
     static EmpresaService createEmpresaService(Sql sql) {
-        EmpresaDAO eDAO = new EmpresaDAO(sql)
-        VagaDAO vDAO = new VagaDAO(sql)
-        CandidatoDAO cDAO = new CandidatoDAO(sql)
-        EmpresaView eView = new EmpresaView()
-
-        return new EmpresaService(eDAO, vDAO, cDAO, eView)
+        EmpresaDAO empresaDAO = new EmpresaDAO(sql)
+        VagaDAO vagaDAO = new VagaDAO(sql)
+        CandidatoDAO candidatoDAO = new CandidatoDAO(sql)
+        return new EmpresaService(empresaDAO, vagaDAO, candidatoDAO)
     }
 }
