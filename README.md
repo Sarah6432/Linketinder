@@ -10,8 +10,8 @@ O **Linketinder** é um ecossistema de contratação simplificado que une a din�
 * **Linguagens:** Groovy (4.0+) / Java JDK 21.
 * **Gerenciamento de Dependências:** Gradle 5.1.1.
 * **Banco de Dados:** PostgreSQL.
-* **Drivers:** JDBC para integração Groovy-SQL.
-* **Servidor Web:** Apache Tomcat 9 (v2.0).
+* **Servidor Web:** Apache Tomcat 9.0.
+* **Arquitetura:** Padrão DAO (Data Access Object) com Injeção de Dependência.
 
 ### **Frontend (Interface Web)**
 * **Linguagem:** TypeScript (ES6).
@@ -26,19 +26,7 @@ O **Linketinder** é um ecossistema de contratação simplificado que une a din�
 * **Gerenciamento de Competências (N:N):** Sistema de normalização onde competências são entidades únicas vinculadas a múltiplos candidatos e vagas através de tabelas associativas.
 * **Fluxo de Match Real:** * **Candidatos:** Visualizam vagas (requisitos/descrição) e registram interesse.
     * **Empresas:** Visualizam interessados de forma anônima (foco em competências) e retribuem o "like".
-    * **Algoritmo de Match:** Identificação automática de interesse mútuo via queries SQL de interseção.
 * **CRUD Completo:** Interfaces para Criar, Listar, Atualizar e Deletar qualquer entidade com integridade referencial (**ON DELETE CASCADE**).
-
----
-
-## 📂 Estrutura do Banco de Dados
-
-O projeto utiliza uma modelagem relacional otimizada para garantir a performance:
-* `candidatos` / `empresas`: Entidades principais de usuários.
-* `vagas`: Vinculadas a empresas via chave estrangeira.
-* `competencias`: Tabela mestra de habilidades técnicas.
-* `candidato_competencias` / `vagas_competencias`: Tabelas de relacionamento muitos-para-muitos.
-* `curtidas_candidato` / `curtidas_empresa`: Registro de interações para cálculo de Match.
 
 ---
 
@@ -51,47 +39,50 @@ A arquitetura foi refatorada para seguir padrões de mercado, garantindo um cód
 | **Factory Method** | Centralizado na `ServiceFactory` para instanciar DAOs e Services. |
 | **DAO (Data Access Object)** | Isolamento total da lógica SQL em classes especialistas. |
 | **Injeção de Dependência** | Dependências injetadas via construtor para facilitar testes e desacoplamento. |
-| **Strategy** | Uso de interfaces de persistência permitindo trocar o meio de salvamento facilmente. |
-| **MVC / SoC** | Separação rigorosa entre Modelo (DAO), Visão (CLI/Web) e Controle (Services). |
-
-### **Correções Técnicas de Clean Code:**
-* **DRY (Don't Repeat Yourself):** Centralização da lógica de exibição no método `exibirPerfil()`.
-* **Padrão AAA nos Testes:** Estrutura clara de **Arrange, Act, Assert** para testes unitários.
-* **Nomes Intencionais:** Refatoração de métodos para nomes semânticos (ex: `shouldRegisterNewCandidatoCorrectly`).
-* **Tratamento de Erros:** Arquitetura de propagação de exceções, evitando falhas silenciosas.
+| **MVC / SoC** | Separação rigorosa entre Modelo (DAO), Visão (Servlet/Web) e Controle (Services). |
 
 ---
 
-## 📡 Endpoints da API (Atualização V2.0)
+## 📡 Guia de Execução da API (Backend)
 
-Com a integração do Tomcat, o sistema agora expõe endpoints RESTful para o Frontend:
-
-* `POST /api/candidatos`: Realiza o cadastro de novos talentos e suas competências.
-* `GET /api/candidatos`: Recupera a lista de vagas compatíveis para o perfil logado.
-* `POST /api/empresas`: Cadastra organizações no ecossistema.
-* `POST /api/vagas`: Permite a criação de novas oportunidades vinculadas a uma empresa.
-
----
-
-## 🚀 Como Executar
+Para executar e testar as funcionalidades da API, siga os passos abaixo:
 
 ### **1. Configuração do Banco de Dados**
-1. Certifique-se de ter o **PostgreSQL** instalado e rodando.
-2. Crie um banco de dados chamado `linketinder`.
-3. Execute os scripts SQL presentes na pasta `/sql`.
+1. Certifique-se de ter o **PostgreSQL** instalado.
+2. Crie um banco chamado `linketinder`.
+3. Execute os scripts SQL da pasta `/sql` para criar as tabelas e relacionamentos.
 
-### **2. Executando o Backend**
-1. Configure suas credenciais (Usuário e Senha) nas variáveis de ambiente do seu servidor (ou via `Smart Tomcat`).
-2. Execute via Gradle:
-   ```bash
-   ./gradlew run
+### **2. Configuração no IntelliJ (Smart Tomcat)**
+1. Vá em **Run > Edit Configurations**.
+2. Adicione uma nova configuração de **Smart Tomcat**.
+3. Em **Environment Variables**, adicione as credenciais do seu banco:
+    * `DB_PASS=sua_senha`
+    * `DB_USER=seu_usuario`
+4. Clique em **Run** para iniciar o servidor na porta `8080`.
 
-### **3. Executando o Frontend**
-   Navegue até a pasta frontend_oficial.
+### **3. Testando com Postman**
+Para cadastrar um novo candidato, faça uma requisição **POST** para `http://localhost:8080/api/candidatos`:
+* **Header:** `Content-Type: application/json`
+* **Body (raw JSON):**
+```json
+{
+    "nome": "Sarah",
+    "email": "sarah@teste.com",
+    "skills": ["Groovy", "Java", "SQL"],
+    "sobrenome": "Silva",
+    "pais": "Brasil",
+    "cep": "12345-678",
+    "bio": "Desenvolvedora Backend",
+    "cpf": "12345678900",
+    "data": "1995-05-15",
+    "senha": "123"
+}
+### **🚀 Como Executar o Frontend**
+Navegue até a pasta frontend_oficial.
 
-Compile o TypeScript: tsc.
+Compile o TypeScript executando tsc.
 
-Abra o arquivo index.html (recomenda-se o uso da extensão Live Server no VS Code).
+Abra o arquivo index.html utilizando o Live Server para consumir a API rodando localmente.
 
 Autora: Sarah Silva Lima
 
