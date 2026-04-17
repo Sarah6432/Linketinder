@@ -77,6 +77,8 @@ Para cadastrar um novo candidato, faça uma requisição **POST** para `http://l
     "data": "1995-05-15",
     "senha": "123"
 }
+
+```
 ### **🚀 Como Executar o Frontend**
 Navegue até a pasta frontend_oficial.
 
