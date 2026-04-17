@@ -1,169 +1,98 @@
-🚀 Linketinder - Sistema de Recrutamento (Full Stack MVP)
-O Linketinder é um ecossistema de contratação simplificado que une a dinâmica de "Match" à curadoria técnica de talentos. O projeto evoluiu de uma estrutura em memória para uma aplicação Data-Driven, utilizando banco de dados relacional para gerenciar perfis, vagas e interações.
+# 🚀 Linketinder - Sistema de Recrutamento Full Stack
 
-🛠️ Tecnologias e Arquitetura
-Backend & Persistência
-Linguagem: Groovy (4.0+) / Java JDK 21.
-Gradle 5.1.1 para organização do projeto.
+O **Linketinder** é um ecossistema de contratação simplificado que une a dinâmica de "Match" à curadoria técnica de talentos. O projeto evoluiu de uma estrutura simples em memória para uma aplicação **Data-Driven** robusta, utilizando persistência em banco de dados relacional e uma arquitetura orientada a objetos de alta qualidade.
 
-Banco de Dados: PostgreSQL.
+---
 
-Arquitetura: Padrão DAO (Data Access Object) para isolamento da lógica de persistência.
+## 🛠️ Tecnologias e Arquitetura
 
-Drivers: JDBC para integração Groovy-SQL.
+### **Backend & Persistência**
+* **Linguagens:** Groovy (4.0+) / Java JDK 21.
+* **Gerenciamento de Dependências:** Gradle 5.1.1.
+* **Banco de Dados:** PostgreSQL.
+* **Drivers:** JDBC para integração Groovy-SQL.
+* **Servidor Web:** Apache Tomcat 9 (v2.0).
 
-Frontend (Interface Web)
-Linguagem: TypeScript (ES6).
+### **Frontend (Interface Web)**
+* **Linguagem:** TypeScript (ES6).
+* **Estilização:** CSS3 Moderno (Flexbox, Grid, Variáveis).
+* **Gráficos:** Chart.js para analytics de competências.
 
-Estilização: CSS3 Moderno (Flexbox, Grid, Variáveis).
+---
 
-Gráficos: Chart.js para analytics de competências.
+## ✨ Novas Funcionalidades (V2.0 - Database Integrated)
 
-🌟 Novas Funcionalidades (V2.0 - Database Integrated)
-Persistência Relacional: Todo o fluxo de Candidatos, Empresas e Vagas agora é armazenado permanentemente no PostgreSQL.
+* **Persistência Relacional:** Todo o fluxo de dados agora é armazenado permanentemente no PostgreSQL.
+* **Gerenciamento de Competências (N:N):** Sistema de normalização onde competências são entidades únicas vinculadas a múltiplos candidatos e vagas através de tabelas associativas.
+* **Fluxo de Match Real:** * **Candidatos:** Visualizam vagas (requisitos/descrição) e registram interesse.
+    * **Empresas:** Visualizam interessados de forma anônima (foco em competências) e retribuem o "like".
+    * **Algoritmo de Match:** Identificação automática de interesse mútuo via queries SQL de interseção.
+* **CRUD Completo:** Interfaces para Criar, Listar, Atualizar e Deletar qualquer entidade com integridade referencial (**ON DELETE CASCADE**).
 
-Gerenciamento de Competências (N:N): Sistema de normalização onde competências são entidades únicas vinculadas a múltiplos candidatos e vagas.
+---
 
-Fluxo de Match Real: * Candidatos: Visualizam vagas (apenas descrição e requisitos) e registram interesse.
+## 📂 Estrutura do Banco de Dados
 
-Empresas: Visualizam candidatos interessados (foco em competências/anonimato) e retribuem o interesse.
+O projeto utiliza uma modelagem relacional otimizada para garantir a performance:
+* `candidatos` / `empresas`: Entidades principais de usuários.
+* `vagas`: Vinculadas a empresas via chave estrangeira.
+* `competencias`: Tabela mestra de habilidades técnicas.
+* `candidato_competencias` / `vagas_competencias`: Tabelas de relacionamento muitos-para-muitos.
+* `curtidas_candidato` / `curtidas_empresa`: Registro de interações para cálculo de Match.
 
-Algoritmo de Match: Identificação automática de interesse mútuo via queries SQL de interseção.
+---
 
-CRUD Completo: Interfaces de terminal para Criar, Listar, Atualizar e Deletar (CRUD) qualquer entidade do sistema com integridade referencial (ON DELETE CASCADE).
+## 🏛️ Design Patterns & Princípios SOLID
 
-🏗️ Estrutura do Banco de Dados
-O projeto utiliza uma estrutura relacional otimizada:
+A arquitetura foi refatorada para seguir padrões de mercado, garantindo um código limpo e escalável:
 
-candidatos / empresas: Entidades principais de usuários.
+| Padrão | Aplicação no Projeto |
+| :--- | :--- |
+| **Factory Method** | Centralizado na `ServiceFactory` para instanciar DAOs e Services. |
+| **DAO (Data Access Object)** | Isolamento total da lógica SQL em classes especialistas. |
+| **Injeção de Dependência** | Dependências injetadas via construtor para facilitar testes e desacoplamento. |
+| **Strategy** | Uso de interfaces de persistência permitindo trocar o meio de salvamento facilmente. |
+| **MVC / SoC** | Separação rigorosa entre Modelo (DAO), Visão (CLI/Web) e Controle (Services). |
 
-vagas: Vinculadas a empresas.
+### **Correções Técnicas de Clean Code:**
+* **DRY (Don't Repeat Yourself):** Centralização da lógica de exibição no método `exibirPerfil()`.
+* **Padrão AAA nos Testes:** Estrutura clara de **Arrange, Act, Assert** para testes unitários.
+* **Nomes Intencionais:** Refatoração de métodos para nomes semânticos (ex: `shouldRegisterNewCandidatoCorrectly`).
+* **Tratamento de Erros:** Arquitetura de propagação de exceções, evitando falhas silenciosas.
 
-competencias: Tabela mestra de habilidades técnicas.
+---
 
-candidato_competencias / vagas_competencias: Tabelas de relacionamento muitos-para-muitos.
+## 📡 Endpoints da API (Atualização V2.0)
 
-curtidas_candidato / curtidas_empresa: Registro de interações para cálculo de Match.
+Com a integração do Tomcat, o sistema agora expõe endpoints RESTful para o Frontend:
 
-ATUALIZAÇÃO: 
-Adicionei o gradle para melhor organização de depêndencias e pastas do projeto!
+* `POST /api/candidatos`: Realiza o cadastro de novos talentos e suas competências.
+* `GET /api/candidatos`: Recupera a lista de vagas compatíveis para o perfil logado.
+* `POST /api/empresas`: Cadastra organizações no ecossistema.
+* `POST /api/vagas`: Permite a criação de novas oportunidades vinculadas a uma empresa.
 
-Correções para Clean Code: 
-Eliminação de Código Duplicado (DRY - Don't Repeat Yourself)
-As lógicas de exibição e gerenciamento foram centralizadas. Em vez de cada menu tentar formatar os dados do candidato, passamos a utilizar o método exibirPerfil() da classe, garantindo que qualquer mudança visual seja feita em um único lugar.
+---
 
-Padrão AAA nos Testes (Arrange, Act, Assert)
-Refatorei os testes para que cada um tenha uma estrutura clara:
+## 🚀 Como Executar
 
-Arrange: Prepara os dados (Cria o objeto).
+### **1. Configuração do Banco de Dados**
+1. Certifique-se de ter o **PostgreSQL** instalado e rodando.
+2. Crie um banco de dados chamado `linketinder`.
+3. Execute os scripts SQL presentes na pasta `/sql`.
 
-Act: Executa a ação (Salva ou curti).
+### **2. Executando o Backend**
+1. Configure suas credenciais (Usuário e Senha) nas variáveis de ambiente do seu servidor (ou via `Smart Tomcat`).
+2. Execute via Gradle:
+   ```bash
+   ./gradlew run
 
-Assert: Verifica o resultado (Compara com o esperado).
-Isso torna o teste documentação viva do sistema.
-
-Nomes Significativos e Intencionais
-Mudei nomes de métodos de teste de InserirCandidatoNovo para shouldRegisterNewCandidatoCorrectly. O nome agora descreve o comportamento esperado, facilitando a leitura por outros desenvolvedores.
-
-Separação de Preocupações (SoC)
-O código do LinketinderApp (Interface/CLI) agora foca em interagir com o usuário, enquanto o DAO foca estritamente em SQL. A lógica de "Match" foi movida para onde pertence (regra de negócio), e não jogada dentro de uma query complexa.
-
-Tratamento de Erros Profissional
-Saímos do amadorismo de "imprimir o erro na tela e continuar" para uma arquitetura onde o erro é propagado e tratado no main. Isso mantém o estado do programa consistente e evita comportamentos inesperados (Side Effects).
-
-///////////////////////////////
-Principais Correções Realizadas - SOLID
-1. Separação de Responsabilidades (SRP)
-Antes: A lógica de negócio (como decidir quais campos atualizar ou formatar strings) estava misturada com a interface no LinketinderApp ou diretamente no SQL do DAO.
-
-Depois: Criamos a camada de Service (service.CandidatoService, service.EmpresaService). Agora, o App apenas lê dados do teclado e o DAO apenas executa SQL. Toda a "inteligência" do sistema fica protegida nos Services.
-
-2. Estabilidade de Tipos e Construtores (LSP)
-Antes: As classes model.Candidato e model.Empresa tinham construtores confusos e redundantes. Ao mudar a hierarquia para uma model.EntidadeBase, corrigimos erros de "missing constructor" que quebravam o sistema.
-
-Depois: O uso de Herança correta permitiu que o sistema tratasse candidatos e empresas como "Pessoas", facilitando a exibição de perfis e garantindo que o construtor usado no DAO fosse o mesmo definido na classe.
-
-3. Sincronização com o Banco de Dados
-Antes: Haviam erros de digitação (typos) como data_pascimento (em vez de data_nascimento) e nomes de colunas genéricos como nome em tabelas onde o banco exigia nome_empresa ou nome_vaga.
-
-Depois: Mapeamos cada insert, update e select para bater exatamente com o seu esquema PostgreSQL, eliminando as exceções de PSQLException.
-
-4. Segregação de Interfaces (ISP)
-Antes: Os Services dependiam das classes concretas dos DAOs. Se o DAO mudasse, o Service quebrava.
-
-Depois: Criamos interfaces pequenas (model.IReader, model.IWriter, model.ICurtida, model.ICompetenciaManager). Agora, o service.CompetenciaService não sabe o que é um DAO.CandidatoDAO; ele só sabe que recebeu algo que "sabe vincular competências".
-///////////////////////////////////
-🏗️ Design Patterns Utilizados
-Além da arquitetura base, o projeto aplica padrões que facilitam a manutenção e a escalabilidade do sistema:
-
-1. Factory Method (ServiceFactory)
-Utilizado na classe ServiceFactory. Este padrão centraliza a criação de objetos complexos. Em vez de instanciar os serviços manualmente em todo o código, a Factory encapsula a lógica de instanciar os DAOs e passá-los para os serviços.
-
-Vantagem: Se a forma de criar um CandidatoService mudar (ex: precisar de um novo parâmetro), você altera apenas na Factory e não em todo o projeto.
-
-2. Data Access Object - DAO
-Presente nas classes CandidatoDAO, EmpresaDAO e VagaDAO. O padrão DAO isola a camada de persistência (Banco de Dados SQL) da lógica de negócio.
-
-Vantagem: O restante do sistema não sabe se os dados vêm de um banco PostgreSQL ou de uma lista na memória; ele apenas solicita os dados para o DAO.
-
-3. Interface Segregation (Segregação de Interfaces)
-Visto no uso de interfaces como IReader, IWriter, ICurtida e ICompetenciaManager. O sistema não utiliza uma interface única "gigante", mas sim interfaces pequenas e específicas para cada ação.
-
-Vantagem: Uma classe que só precisa ler dados não é obrigada a implementar métodos de exclusão ou atualização.
-
-4. Dependency Injection (Injeção de Dependência)
-Aplicado em todos os Controllers e Services. As dependências (como o Sql ou os DAOs) não são criadas dentro das classes que as usam; elas são "injetadas" através do Construtor.
-
-Vantagem: Facilita testes unitários e torna as classes menos acopladas (mais independentes).
-
-5. Strategy (Estratégia)
-Utilizado de forma sutil através das interfaces de persistência. O EmpresaService recebe objetos do tipo IWriter<Empresa>. Ele não sabe qual é a implementação exata (se é um DAO que salva no banco ou um que salva em arquivo), ele apenas executa a "estratégia" de salvar.
-
-Vantagem: Permite trocar o meio de salvamento sem alterar uma linha de código na camada de serviço.
-
-MVC - 
-Principais Correções Técnicas
-Injeção de Dependências: Refatoração dos construtores dos Services para receberem DAOs e Views externamente. Isso eliminou a criação de instâncias internas, facilitando testes e manutenção.
-
-Padronização de Assinaturas: Alinhamento de métodos entre Controller, Service e DAO para utilizarem objetos Map e String puras, evitando erros de tipagem e de parâmetros faltantes.
-
-Consistência de Dados: Ajuste no fluxo de persistência para garantir que entidades como Empresa e Candidato sejam criadas com todos os campos obrigatórios antes de chegarem ao banco.
-
-Melhoria de UX no CLI: Implementação de controles de fluxo e tratamento de exceções para evitar que erros de input derrubem a aplicação.
-
-Evolução da Arquitetura MVC
-A refatoração aplicou a Separação de Responsabilidades de forma rigorosa:
-
-Model (Dados): Os DAOs tornaram-se especialistas. Agora possuem métodos atômicos, que escondem toda a complexidade do SQL das outras camadas.
-
-View (Interface): A interface foi limpa de lógica. Criamos métodos de exibição genéricos que apenas formatam dados recebidos, permitindo reutilizar a mesma "ficha de perfil" em diferentes partes do sistema.
-
-Controller/Service (Lógica): O Service passou a concentrar a inteligência de negócio, enquanto o Controller atua apenas como o orquestrador entre a entrada do usuário e o processamento.
-
-Resultado: O código tornou-se escalável, reutilizável e testável.
-
-🏃 Como Executar
-1. Configuração do Banco de Dados
-Certifique-se de ter o PostgreSQL instalado.
-
-Crie um banco de dados chamado linketinder.
-
-Execute os scripts SQL presentes na pasta /sql (ou crie as tabelas conforme as definições de classe).
-
-2. Executando o Backend (Console)
-Configure suas credenciais na classe config.Conexao.groovy.
-
-Execute via Gradle:
-
-Bash
-./gradlew run
-Utilize o menu interativo para navegar entre as áreas de model.Candidato, model.Empresa e Gerenciamento.
-
-3. Testando o Frontend (Web)
-Navegue até frontend_oficial.
+### **3. Executando o Frontend**
+   Navegue até a pasta frontend_oficial.
 
 Compile o TypeScript: tsc.
 
-Abra index.html via Live Server.
+Abra o arquivo index.html (recomenda-se o uso da extensão Live Server no VS Code).
 
-Autora: Sarah Silva Lima 
+Autora: Sarah Silva Lima
+
+Desenvolvido como projeto educacional focado em Engenharia de Software e Clean Code.
