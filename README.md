@@ -89,3 +89,18 @@ Abra o arquivo index.html utilizando o Live Server para consumir a API rodando l
 Autora: Sarah Silva Lima
 
 Desenvolvido como projeto educacional focado em Engenharia de Software e Clean Code.
+
+🧪 Estratégia de Qualidade e Testes (Unit Testing): 
+O projeto implementa uma camada rigorosa de testes unitários utilizando o Spock Framework, garantindo que as regras de negócio estejam isoladas de falhas de infraestrutura ou banco de dados.
+
+Metodologia Aplicada - BDD (Behavior-Driven Development): Testes escritos em linguagem semântica utilizando os blocos given, when e then.
+Mocking Total: Utilização de objetos dublês (Mocks) para simular o comportamento dos DAOs e Interfaces, permitindo testar os Services de forma isolada.
+Tipagem Estrita: Todos os testes utilizam tipagem explícita para garantir a integridade dos contratos de dados entre Java e Groovy.
+Cobertura de Testes (CRUD Completo)Suíte de Teste: 
+O que é validado no CandidatoServiceSpec: Cadastro com retorno de ID, listagem de perfis, atualização de dados e exclusão lógica.
+EmpresaServiceSpec: Registro de empresas, anúncio de vagas com objetos complexos e gestão de perfil corporativo.
+CompetenciaServiceSpec:  Vínculo de competências via Interfaces, tratamento de exceções em falhas de manager e normalização de nomes.
+
+Como Executar os TestesPara rodar a suíte completa de testes e gerar o relatório de cobertura:Abra o terminal na raiz do projeto.
+Execute o comando no bash: 
+./gradlew clean test.
