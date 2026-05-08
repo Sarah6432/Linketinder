@@ -14,7 +14,7 @@ class CompetenciaService {
 
     void vincularAoCandidato(int candidatoId, String nomeSkill) {
         try {
-            compManager.vincular(candidatoId, nomeSkill)
+            compManager.vincularCompetencia(candidatoId, nomeSkill)
             println "Sucesso: Skill '$nomeSkill' vinculada ao candidato $candidatoId!"
         } catch (Exception e) {
             println "Erro ao vincular: ${e.message}"

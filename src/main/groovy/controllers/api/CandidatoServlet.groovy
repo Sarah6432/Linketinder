@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import config.Conexao
 import config.ServiceFactory
 import groovy.sql.Sql
+import model.Vaga
 import service.CandidatoService
 
 import javax.servlet.ServletException
@@ -68,7 +69,7 @@ class CandidatoServlet extends HttpServlet {
         response.characterEncoding = "UTF-8"
 
         try {
-            def lista = candidatoService.listarVagasDisponiveis()
+            List<Vaga> lista = candidatoService.listarVagasDisponiveis()
             response.status = HttpServletResponse.SC_OK
             response.writer.print(gson.toJson(lista))
         } catch (Exception e) {

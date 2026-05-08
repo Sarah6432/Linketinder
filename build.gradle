@@ -1,4 +1,5 @@
 plugins {
+    id 'java'
     id 'groovy'
     id 'application'
 }
@@ -11,11 +12,22 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.postgresql:postgresql:42.7.2'
-    implementation 'org.apache.groovy:groovy-all:4.0.15'
+    implementation 'org.codehaus.groovy:groovy:3.0.18'
+    implementation 'org.codehaus.groovy:groovy-sql:3.0.18'
 
-    testImplementation platform('org.junit:junit-bom:5.10.0')
-    testImplementation 'org.junit.jupiter:junit-jupiter'
+    implementation 'org.postgresql:postgresql:42.7.2'
+    implementation 'com.google.code.gson:gson:2.10.1'
+    compileOnly 'javax.servlet:javax.servlet-api:3.1.0'
+    implementation 'org.postgresql:postgresql:42.7.2'
+    implementation 'org.codehaus.groovy:groovy:3.0.18'
+
+    testImplementation 'net.bytebuddy:byte-buddy:1.14.9'
+    testImplementation 'org.objenesis:objenesis:3.3'
+
+    testImplementation platform('org.spockframework:spock-bom:2.3-groovy-3.0')
+    testImplementation 'org.spockframework:spock-core'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
     compileOnly 'javax.servlet:javax.servlet-api:3.1.0'
     implementation 'com.google.code.gson:gson:2.10.1'

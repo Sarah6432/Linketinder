@@ -40,6 +40,9 @@ class CandidatoService {
         }
         return id
     }
+    List<Candidato> obterTodos() {
+        return candidatoDAO.listarTodos()
+    }
 
     void atualizarPerfilCompleto(Candidato c, Map dados) {
         c.nome = (String) dados.nome ?: c.nome
